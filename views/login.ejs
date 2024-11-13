@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <%- include('./includes/head', {title: "Connexion - Pharmat", style: "auth"}); %>
+    <body>
+        <%- include('./includes/messages'); %>
+        <main>
+            <h1>Connexion</h1>
+            <form id="form">
+                <input class="log" name="mail" type="email" placeholder="Mail">
+                <input class="log" name="password" type="password" placeholder="Mot de passe">
+                <button class="green_button" type="submit">Connexion</button>
+            </form>
+            <a href="/register">Inscription</a>
+        </main>
+        <script>
+            $("#form").submit(function (e) {
+                e.preventDefault()
+                const formData = Object.fromEntries(new FormData(this))
+                
+                $.ajax({
+                    method: "POST",
+                    url: '/login', // Remplacez par l'URL appropriée
+                    data: formData, // Les données à envoyer
+                    dataType: "json"
+                })
+                .done(function (response) {
+                    showMessage(response.message, "success")
+                    setTimeout(function() {
+                        window.location.href = (new URLSearchParams(document.location.search)).get('origin')||'/home';
+                    }, 100);
+                })
+                .fail(function (error) {
+                    console.log(error)
+                    showMessage(error.responseJSON.message || "Erreur serveur", "error")
+                })
+            })
+        </script>
+    </body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <%- include('./includes/head', {title: "Statistiques - Pharmat", style: "stats"}); %>
+    <body>
+        <%- include('./includes/messages'); %>
+        <% console.log(activity) %>
+        <main>
+            <div class="stats_container">
+                <canvas id="performanceChart"></canvas>
+                <canvas id="activityChart"></canvas>
+                <canvas id="answerByYearChart"></canvas>
+            </div>
+
+            
+        </main>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            const performance = JSON.parse('<%- JSON.stringify(performance) %>');
+            // Get the data for the chart
+            const performanceData = {
+                labels: performance.map(data => ''),
+                datasets: [{
+                    label: 'Performance des 30 dernières sessions',
+                    data: performance.map(data => (data.score / (data.size * 2))*100), // Replace with your actual performance data
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            };
+
+
+            const activity = JSON.parse('<%- JSON.stringify(activity) %>');
+            const activityLast7Days = [];
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+
+                let score = 0
+                const matchingActivity = activity.find(data => new Date(data.date).toLocaleDateString() === date.toLocaleDateString());
+                if(matchingActivity){
+                    console.log(matchingActivity)
+                    score = matchingActivity.activity;
+                }
+                activityLast7Days.push({date: date.toLocaleDateString(), activity: score});   
+            }
+            console.log(activityLast7Days);
+            const activityData = {
+                labels: activityLast7Days.map(data => data.date),
+                datasets: [{
+                    label: 'Activité de ces 7 derniers jours',
+                    data: activityLast7Days.map(data => data.activity), // Replace with your actual activity data
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            };
+
+            const answerByYear = JSON.parse('<%- JSON.stringify(answerByYear) %>');
+            const answerByYearData = {
+                labels: answerByYear.map(data => data.year),
+                datasets: [{
+                    label: 'Questions traitées par année',
+                    data: answerByYear.map(data => data.answered_questions_number), // Replace with your actual activity data
+                    backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 205, 86)',
+                    'rgb(75, 192, 192)',
+                    'rgb(153, 102, 255)',
+                    'rgb(255, 159, 64)',
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 205, 86)',
+                    'rgb(75, 192, 192)',
+                    'rgb(153, 102, 255)',
+                    'rgb(255, 159, 64)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+
+            // Create the chart
+            const performanceChart = new Chart(document.getElementById('performanceChart'), {
+                type: 'line',
+                data: performanceData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Performance des 30 dernières sessions'
+                        },
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            const activityChart = new Chart(document.getElementById('activityChart'), {
+                type: 'bar',
+                data: activityData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Activité de ces 7 derniers jours'
+                        },
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            const answerByYearChart = new Chart(document.getElementById('answerByYearChart'), {
+                type: 'doughnut',
+                data: answerByYearData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Questions traitées par année'
+                        },
+                    }
+                }
+            });
+        </script>
+        <%- include('./includes/nav'); %>
+    </body>
+</html>

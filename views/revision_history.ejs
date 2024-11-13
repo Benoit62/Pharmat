@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <%- include('./includes/head', {title: "History - Pharmat", style: "history", description: "Anné " + revision_infos.year }); %>
+    <body>
+        <%- include('./includes/messages'); %>
+        <main>
+            <div>
+                <div class="revision_history_header">
+                    <div class="line_1">
+                        <h2>Année <%= session[0]?.year %></h2>
+                        <% const performance = revision_infos.score/(revision_infos.answered * 2); %>
+                        <p><i class="fa-solid fa-certificate item <% switch (true) {
+                            case performance >= 0.8: %>great<%
+                                break;
+                            case performance >= 0.6: %>good<%
+                                break;
+                            case performance >= 0.4: %>poor<%
+                                break;
+                            case performance >= 0.2: %>bad<%
+                                break;
+                            default: %>terrible<%
+                                break;
+                        } %>"></i> <%= revision_infos.score %> / <%= revision_infos.answered * 2 %></p>
+                    </div>
+                    <div class="year_revision_progress_history_page">
+                        <div class="progress_bar" style="width: <%= ((revision_infos.answered * 100) / (revision_infos.total)) === 0 ? 0 : Math.max((revision_infos.answered * 100) / (revision_infos.total), 4) %>%;"></div>
+                        <div class="revision_year_history"><%= revision_infos.answered %> / <%= revision_infos.total %></div>
+                    </div>
+                </div>
+                <div class="answers_container">
+                    <div class="answers">
+                        <% session.forEach((question, index) => {
+                            const correct = question.correct?.split(',');
+                            const answers = question.answer?.split(',');
+                            const score = question.score;
+                        %>
+                            <% if (question.answer) { %>
+                                <div class="container_question_container">
+                                    <div class="own_answers question_container <% switch (true) {
+                                        case score >= 2: %>good<%
+                                            break;
+                                        case score >= 1: %>poor<%
+                                            break;
+                                        case score >= 0.4: %>bad<%
+                                            break;
+                                        default: %>terrible<%
+                                            break;
+                                    } %>">
+                                        <h3 class="question"><%= index + 1 %>. <%= question.question %></h3>
+                                        <div class="answer" style="color: <%= correct.includes("A") ? (answers.includes("A") ? "green" : (!answers.includes("A") ? "orange" : "")) : (answers.includes("A") ? "red" : "")  %>;"><%= question.A %></div>
+                                        <div class="answer" style="color: <%= correct.includes("B") ? (answers.includes("B") ? "green" : (!answers.includes("B") ? "orange" : "")) : (answers.includes("B") ? "red" : "")  %>;"><%= question.B %></div>
+                                        <div class="answer" style="color: <%= correct.includes("C") ? (answers.includes("C") ? "green" : (!answers.includes("C") ? "orange" : "")) : (answers.includes("C") ? "red" : "")  %>;"><%= question.C %></div>
+                                        <div class="answer" style="color: <%= correct.includes("D") ? (answers.includes("D") ? "green" : (!answers.includes("D") ? "orange" : "")) : (answers.includes("D") ? "red" : "")  %>;"><%= question.D %></div>
+                                        <div class="answer" style="color: <%= correct.includes("E") ? (answers.includes("E") ? "green" : (!answers.includes("E") ? "orange" : "")) : (answers.includes("E") ? "red" : "")  %>;"><%= question.E %></div>
+                                        <p class="bilan_question"><%= question.errors %> erreurs - <%= question.score %> points</p>
+                                    </div>
+                                    <div style="display: none;" class="real_answers question_container">
+                                        <h3 class="question"><%= index + 1 %>. <%= question.question %></h3>
+                                        <div class="answer" style="color: <%= correct.includes("A") ? "green" : "" %>;"><%= question.A %></div>
+                                        <div class="answer" style="color: <%= correct.includes("B") ? "green" : "" %>;"><%= question.B %></div>
+                                        <div class="answer" style="color: <%= correct.includes("C") ? "green" : "" %>;"><%= question.C %></div>
+                                        <div class="answer" style="color: <%= correct.includes("D") ? "green" : "" %>;"><%= question.D %></div>
+                                        <div class="answer" style="color: <%= correct.includes("E") ? "green" : "" %>;"><%= question.E %></div>
+                                    </div>
+                                    <div class="switch_answer_buttons">
+                                        <div class="switch_button">Voir la correction</div>
+                                    </div>
+                                </div>
+                            <% } else { %>
+                                <div class="own_answers question_container unknown">
+                                    <h3 class="question"><%= index + 1 %>. <%= question.question %></h3>
+                                    <div class="answer"><%= question.A %></div>
+                                    <div class="answer"><%= question.B %></div>
+                                    <div class="answer"><%= question.C %></div>
+                                    <div class="answer"><%= question.D %></div>
+                                    <div class="answer"><%= question.E %></div>
+                                    <p class="bilan_question">Non répondu</p>
+                                </div>
+                            <% } %>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+            
+        </main>
+        <script>
+            $(document).ready(() => {
+                $(".switch_button").click((e) => {
+                    const target = e.target;
+                    const parent = e.target.parentElement.parentElement;
+                    const ownAnswers = parent.querySelector('.own_answers');
+                    const realAnswers = parent.querySelector('.real_answers');
+                    if (ownAnswers.style.display === "none") {
+                        ownAnswers.style.display = "block";
+                        realAnswers.style.display = "none";
+                        target.innerHTML = "Voir la correction";
+                    } else {
+                        ownAnswers.style.display = "none";
+                        realAnswers.style.display = "block";
+                        target.innerHTML = "Voir mes réponses";
+                    }
+                });
+            });
+        </script>
+        
+        <%- include('./includes/nav'); %>
+    </body>
+</html>

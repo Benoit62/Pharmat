@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <%- include('./includes/head', {title: "QCM - Pharmat", style: "dashboards"}); %>
+  <body>
+    <%- include('./includes/messages'); %>
+    <main>
+        <form class="years_container">
+            <h2>Entrainement</h2>
+            <select class="year_select" id="year-select">
+                <%
+                    const totalCard = years.reduce((total, year) => total + year.count, 0); 
+                    years.push({year:"Aléatoire", count:totalCard})
+                %>
+                <% years.forEach(year => { %>
+                    <option value="<%= year.year %>"><%= year.year %> - <%= year.count %> QCM</option>
+                <% }); %>
+            </select>
+            <div class="selected_year_infos">
+                <p>Sessions: <%= years[0].sessions_number %> - Questions répondues: <%= years[0].answered_questions %></p>
+            </div>
+            <div class="qcm_range_div">
+                <input class="qcm_range" type="range" id="qcm-range" min="5" max="<%= years[0].count %>" step="5" value="10">
+                <input class="qcm_amout" type="text" id="qcm-amount" value="10" readonly>
+                <input class="type" type="hidden" value="training">
+            </div>
+            <button class="start session_start_button green">Lancer l'entrainement</button>
+        </form>
+
+        <script>
+
+            const years = JSON.parse('<%- JSON.stringify(years) %>');
+            console.log(years);
+
+            $(".year_select").change(function() {
+                const qcmRange = this.parentElement.querySelector('.qcm_range');
+                const qcmAmount = this.parentElement.querySelector('.qcm_amout');
+
+                const selectedYear = parseInt($(this).val());
+                const selectedCount = years.find(year => year.year === selectedYear).count;
+                qcmRange.max = selectedCount;
+                qcmRange.value = 10;
+                qcmAmount.value = '10';
+
+                // Update the selected year infos
+                const selectedYearInfos = years.find(year => year.year === selectedYear);
+                const selectedYearInfosDiv = this.parentElement.querySelector('.selected_year_infos');
+                selectedYearInfosDiv.innerHTML = `
+                    <p>Sessions: ${selectedYearInfos.sessions_number} - Questions répondues: ${selectedYearInfos.answered_questions}</p>
+                `;
+            });
+
+            $(".qcm_range").on('input', function() {
+                const selectedAmount = parseInt(this.value);
+                const maxAmount = parseInt(this.getAttribute('max'));
+                this.parentElement.querySelector('.qcm_amout').value = selectedAmount >= maxAmount ? 'All' : selectedAmount;
+            });
+
+            $(".start").on("click", function(e) {
+                e.preventDefault();
+                const selectedYear = parseInt($(this).parent().find('.year_select').val());
+                const selectedAmount = parseInt($(this).parent().find('.qcm_range').val());
+                // Check if it's a training or a revision
+                const type = $(this).parent().find('.type').val();
+                console.log(selectedYear, selectedAmount, type);
+
+                $.ajax({
+                    url: "/training/start",
+                    type: 'POST',
+                    data: {
+                        year: selectedYear,
+                        amount: selectedAmount
+                    },
+                    success: (data) => {
+                        showMessage(data.message, "success");
+                        console.log(data);
+                        setTimeout(() => {
+                            window.location.href = '/training/'+data.sessionId;
+                        }, 1000);
+                    },
+                    error: (err) => {
+                        showMessage(err.responseJSON.message, "error");
+                    }
+                });
+            });
+        </script>
+    </main>
+    <%- include('./includes/nav_dashboard'); %>
+    </body>
+</html>

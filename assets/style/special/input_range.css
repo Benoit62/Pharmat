@@ -1,0 +1,62 @@
+/*********** Baseline, reset styles ***********/
+input.qcm_range[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    width: 90%;
+}
+
+/* Removes default focus */
+input.qcm_range[type="range"]:focus {
+    outline: none;
+}
+
+/******** Chrome, Safari, Opera and Edge Chromium styles ********/
+/* slider track */
+input.qcm_range[type="range"]::-webkit-slider-runnable-track {
+    background-color: var(--light-blue);
+    border-radius: 30px;
+    height: 26px;
+}
+
+/* slider thumb */
+input.qcm_range[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    /* Override default look */
+    appearance: none;
+    margin-top: 1px;
+    /* Centers thumb on the track */
+    background-color: var(--dark-blue);
+    border-radius: 1.5rem;
+    height: 2rem;
+    width: 2rem;
+}
+
+input.qcm_range[type="range"]:focus::-webkit-slider-thumb {
+    outline: 3px solid var(--dark-blue);
+    outline-offset: 0.1rem;
+}
+
+/*********** Firefox styles ***********/
+/* slider track */
+input.qcm_range[type="range"]::-moz-range-track {
+    background-color: var(--light-blue);
+    border-radius: 30px;
+    height: 26px;
+}
+
+/* slider thumb */
+input.qcm_range[type="range"]::-moz-range-thumb {
+    background-color: var(--dark-blue);
+    border: none;
+    /*Removes extra border that FF applies*/
+    border-radius: 1.5rem;
+    height: 2rem;
+    width: 2rem;
+}
+
+input.qcm_range[type="range"]:focus::-moz-range-thumb {
+    outline: 3px solid var(--dark-blue);
+    outline-offset: 0.1rem;
+}

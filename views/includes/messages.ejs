@@ -1,0 +1,40 @@
+<div id="notif" class="notif" style="width: 100vw; margin: 0 auto; position: absolute; bottom: -20vh; z-index: 100;"><div id="notif_content" class="notif_content" style="color: white; background-color: rgb(75, 74, 74); border-radius: 15px; width: fit-content; max-width: 90vw; padding: 8px 15px 10px; margin: 0 auto; text-align: center; font-size: 90%;"></div></div>
+
+<script>
+    $("#notif").click(function(){
+        $(this).animate({bottom: '-10vh'}, 100);
+    })
+
+    let show_notif_timeout;
+    let showMessage = function(message, type) {
+        $("#notif_content").html(message);
+        if(window.innerWidth < 800) {
+            $('#notif').animate({bottom: '3vh'}, 150);
+        }
+        else {
+            $('#notif').animate({bottom: '2vh'}, 150);
+        }
+
+        switch (type) {
+            case "error":
+                $("#notif_content").css("background-color", "red")
+                break;
+        
+            case "success":
+                $("#notif_content").css("background-color", "green")
+                break;
+
+            case "info":
+                $("#notif_content").css("background-color", "rgb(75, 74, 74)")
+                break;
+            default:
+                $("#notif_content").css("background-color", "rgb(75, 74, 74)")
+                break;
+        }
+
+        clearTimeout(show_notif_timeout)
+        show_notif_timeout = setTimeout(() => {
+            $('#notif').animate({bottom: '-20vh'}, 150);
+        }, 4000);
+    }
+</script>

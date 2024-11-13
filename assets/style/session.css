@@ -1,0 +1,177 @@
+
+header {
+    height: 10%;
+    width: 100%;
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 200%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+.index_box {
+    width: 20%;
+    flex-shrink: 0;
+    height: 98%;
+    border: 3px solid var(--main-blue);
+    padding: 0 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    margin: 1% 1% 0;
+}
+
+.index_box.active {
+    background-color: var(--main-blue);
+    color: white;
+}
+
+.index_box.answered {
+    border: 3px solid var(--main-green);
+}
+
+.index_box.answered.active {
+    background-color: var(--main-green);
+    color: white;
+}
+
+.index_box.correct {
+    border: 3px solid var(--main-green);
+}
+
+.index_box.correct.active {
+    background-color: var(--main-green);
+    color: white;
+}
+
+.index_box.wrong {
+    border: 3px solid var(--main-red);
+}
+
+.index_box.wrong.active {
+    background-color: var(--main-red);
+    color: white;
+}
+
+.index_box.half {
+    border: 3px solid var(--main-yellow);
+}
+
+.index_box.half.active {
+    background-color: var(--main-yellow);
+    color: white;
+}
+
+.index_box.meh {
+    border: 3px solid var(--main-orange);
+}
+
+.index_box.meh.active {
+    background-color: var(--main-orange);
+    color: white;
+}
+
+.question_container {
+    width: 100%;
+}
+
+.question_container .question {
+    width: 100%;
+    padding: 5px 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.answers_form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.answer_container {
+    width: 100%;
+    padding: 5px 10px;
+    margin: 7px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+    cursor: pointer;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+}
+
+.response_label {
+    margin: 0;
+    margin-left: 10px;
+}
+
+.form_session_button {
+    width: 100%;
+    padding: 10px;
+    margin: 7px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.send_answer_button {
+    background-color: var(--main-blue);
+}
+
+.end_session_button, .quit_session_button {
+    background-color: var(--main-red);
+}
+
+.save_session_button {
+    background-color: var(--main-green);
+}
+
+.session_progress {
+    width: 100%;
+    padding: 10px 10px 5px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.progress_bar {
+    width: 100%;
+    height: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.progress {
+    width: 0;
+    height: 100%;
+    border-radius: 5px;
+    background-color: var(--main-green);
+}
+
+.progress_label {
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+    box-sizing: border-box;
+    margin-top: 5px;
+}

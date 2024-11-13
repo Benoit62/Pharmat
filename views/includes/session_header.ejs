@@ -1,0 +1,6 @@
+<header>
+    <% for (let index = 0; index < questionNumber; index++) { %>
+        <% console.log(active, questionNumber, answered) %>
+        <div class="index_box <%= active == index ? 'active' : '' %> <%= answered.includes(index) ? 'answered' : '' %>" data-index="<%= index %>"><%= index+1 %></div>
+    <% }; %>
+</header>

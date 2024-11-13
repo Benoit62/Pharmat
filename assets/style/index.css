@@ -1,0 +1,23 @@
+main {
+    max-height: 98%!important;
+    height: 98%!important;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 60%;
+}
+
+
+footer .personal_link {
+    text-decoration: underline;
+    color: #0000EE;
+}

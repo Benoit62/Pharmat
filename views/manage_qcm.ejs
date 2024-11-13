@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <%- include('./includes/head', {title: "QCM - Pharmat", style: "admin"}); %>
+  <body>
+    <%- include('./includes/messages'); %>
+    <main>
+        <div class="years_container">
+            <% //console.log(qcms) %>
+            <% years.forEach(year => { year_qcms = qcms.filter(qcm => qcm.year == year.year) %>
+                <h2 class="title_qcms_container"><%= year.year %> - <%= year_qcms.length %> questions</h2>
+                <div style="display: none;" class="qcms_container">
+                    <% year_qcms.forEach(qcm => { %>
+                        <form class="qcm_form">
+                            <h2><%= qcm.number %>.&nbsp;<%= qcm.question %></h2>
+                            <ol>
+                                <li style="color : <%= (qcm.correct.split(",").includes("A")) ? 'green' : 'red' %>"><%= qcm.answerA %></li>
+                                <li style="color : <%= (qcm.correct.split(",").includes("B")) ? 'green' : 'red' %>"><%= qcm.answerB %></li>
+                                <li style="color : <%= (qcm.correct.split(",").includes("C")) ? 'green' : 'red' %>"><%= qcm.answerC %></li>
+                                <li style="color : <%= (qcm.correct.split(",").includes("D")) ? 'green' : 'red' %>"><%= qcm.answerD %></li>
+                                <li style="color : <%= (qcm.correct.split(",").includes("E")) ? 'green' : 'red' %>"><%= qcm.answerE %></li>
+                            </ol>
+                            <button href="/admin/qcm/<%= qcm.id %>/edit">Modifier</button>
+                            <button href="/admin/qcm/<%= qcm.id %>/delete">Supprimer</button>
+                        </form>
+                    <% }); %>
+                </div>
+            <% }); %>
+            
+        </div>
+    </main>
+    <%- include('./includes/nav_admin'); %>
+    </body>
+    <script>
+        $(".title_qcms_container").click(function() {
+            $(this).next().slideToggle(700)
+            this.scrollIntoView({behavior: "smooth", block: "start"});
+            this.classList.toggle("active")
+        });
+    </script>
+</html>

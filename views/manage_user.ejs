@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <%- include('./includes/head', {title: "User - Pharmat", style: "user", other_styles: ["history"]}); %>
+    <body>
+        <%- include('./includes/messages'); %>
+        <main>
+            <div class="user_container">
+                <div class="user_info">
+                    <div class="identity">
+                        <p><i class="fa-solid fa-address-card"></i> <%= user.name %></p>
+                        <p><i class="fa-solid fa-envelope"></i> <%= user.mail %></p>
+                        <p class="role_label"><% if(user.status === "ADMIN") { %><i class="fa-solid fa-graduation-cap"></i><% } else { %><i class="fa-solid fa-user-tag"></i><% } %> <%= user.status %></p>
+                        <p class="last_login" title="Dernière connexion"><i class="fa-solid fa-right-to-bracket"></i> <%= new Date(user.last_login).toLocaleDateString() %> - il y a <%= Math.floor((new Date() - new Date(user.last_login)) / 86400000) %> jours</p>
+                        <p><i class="fa-solid fa-user-graduate"></i><%= new Date(history[0].date).toLocaleDateString() %> - il y a <%= Math.floor((new Date() - new Date(history[0].date)) / 86400000) %> jours</p>
+                        
+                        <% if(new Date(history[0].date).toLocaleDateString() < new Date().toLocaleDateString() && user.phone) { %><a class="whatsapp_button" href="https://wa.me/<%= '33' + user.phone.slice(1) %>?text=Viens%20t%27entrainer%2C%20ça%20fait%20<%= Math.floor((new Date() - new Date(history[0].date)) / 86400000) %>%20jours%20!%20%0AC%27est%20par%20ici%20https://pharmat.alwaysdata.net/qcms%20👊" target="_blank">
+                            <i class="fa-brands fa-whatsapp"></i> Remuer
+                        </a>
+                        <% } %>
+                    </div>
+                    
+                </div>
+                <div class="user_action_items">
+                    <a href="/users/<%= user.id %>/edit" class="action_item edit"><i class="fa-solid fa-pen"></i> Modifier</a>
+                    <a href="/users/<%= user.id %>/delete" class="action_item delete"><i class="fa-solid fa-trash"></i> Supprimer</a>
+                </div>
+                <div class="user_history">
+                    <h2>Historique</h2>
+                    <div class="history_items">
+                        <% history.forEach((hist, index) => {
+                        %>
+                            <% const performance = hist.score/(hist.size * 2); %>
+                            <a href="/history/<%= hist.id_session %>" class="each_session_history <% switch (true) {
+                                case performance >= 0.8: %>great<%
+                                    break;
+                                case performance >= 0.6: %>good<%
+                                    break;
+                                case performance >= 0.4: %>poor<%
+                                    break;
+                                case performance >= 0.2: %>bad<%
+                                    break;
+                                default: %>terrible<%
+                                    break;
+                            } %>">
+                                <h2>Session <%= hist.year %> du <%= new Date(hist.date).toLocaleDateString() %></h2>
+                                <div class="infos_session">
+                                    <div><i class="fa-solid fa-star"></i> <%= hist.score + "/" + (hist.size * 2) %></div>
+                                    <div><i class="fa-solid fa-clipboard-question"></i> <%= hist.size %></div>
+                                </div>
+                                <!-- Add more session info here if needed -->
+                            </a>
+                        <% }); %>
+                    </div>
+                    <button id="load_more_history_button">Afficher plus</button>
+                    <button id="hide_more_history_button" style="display: none;">Afficher moins</button>
+                </div>
+            </div>
+        </main>
+        <%- include('./includes/nav_admin'); %>
+        
+        <script>
+            const loadMoreHistory = document.getElementById('load_more_history_button');
+            const hideMoreHistory = document.getElementById('hide_more_history_button');
+            const historyItems = document.querySelector('.history_items');
+
+            const allSessions = document.querySelectorAll('.each_session_history');
+
+            const startHistoryIndex = 5;
+            let historyIndex = startHistoryIndex;
+
+            for (let i = historyIndex; i < allSessions.length; i++) {
+                allSessions[i].style.display = 'none';
+            }
+
+            function displayMoreHistory() {
+                const allSessions = document.querySelectorAll('.each_session_history');
+                
+                for (let i = historyIndex; i < historyIndex + 5; i++) {
+                    if (allSessions[i]) {
+                        allSessions[i].style.display = 'block';
+                    }
+                }
+                
+                historyIndex += 5;
+                
+                if (historyIndex >= allSessions.length) {
+                    loadMoreHistory.style.display = 'none';
+                }
+
+                if (historyIndex > startHistoryIndex) {
+                    hideMoreHistory.style.display = 'block';
+                }
+            }
+
+            function hideMoreHistoryFunc() {
+                const allSessions = document.querySelectorAll('.each_session_history');
+                
+                for (let i = historyIndex - 1; i >= historyIndex - 5; i--) {
+                    if (allSessions[i]) {
+                        allSessions[i].style.display = 'none';
+                    }
+                }
+                
+                historyIndex -= 5;
+                
+                if (historyIndex < allSessions.length) {
+                    loadMoreHistory.style.display = 'block';
+                }
+
+                if (historyIndex <= startHistoryIndex) {
+                    hideMoreHistory.style.display = 'none';
+                }
+            }
+
+            loadMoreHistory.addEventListener('click', displayMoreHistory);
+
+            hideMoreHistory.addEventListener('click', hideMoreHistoryFunc);
+            
+        </script>
+    </body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <%- include('./includes/head', {title: "QCM - Pharmat", style: "admin"}); %>
+  <body>
+    <%- include('./includes/messages'); %>
+    <main>
+        <h1>Gestion des QCM</h1>
+        <h2>Ajout de QCM</h2>
+        <form id="import_form" class="import_form" enctype='multipart/form-data'>
+            <label class="import_label" for="import">Importer&nbsp;...&nbsp;<i class="lni lni-upload"></i></label>
+            <input name="import" id="import" type="file" multiple>
+            <button class="green_button" type="submit">Importer</button>
+        </form>
+        <h2>Ajout de catégories</h2>
+        <form id="import_cat_form" class="import_form" enctype='multipart/form-data'>
+            <label class="import_label" for="import_cat">Importer&nbsp;...&nbsp;<i class="lni lni-upload"></i></label>
+            <input name="import" id="import_cat" type="file" multiple>
+            <button class="green_button" type="submit">Importer</button>
+        </form>
+    </main>
+    <%- include('./includes/nav_admin'); %>
+    </body>
+    <script>
+        $("#import").on("input", function (e) {
+            const input = this;
+            const files = input.files
+            const label = $(input).siblings("label")
+
+            if(files.length > 0) {
+                label.empty()
+                const container = $(`<p></p>`).appendTo(label)
+
+                for (let file of files) {
+                    container.append(`${file.name}<br>`)
+                }
+            }
+            else {
+                label.append(`Importer&nbsp;...&nbsp;<i class="lni lni-upload"></i>`)
+            }        
+        })
+
+        $("#import_form").submit(function (e) {
+            e.preventDefault()
+
+            console.log(this)
+
+            const data = new FormData(this)
+
+            console.log(data)
+
+            $.ajax({
+                url: '/qcm/import',
+                type: 'POST',
+                data: data,
+                processData: false,
+                contentType: false,
+            })
+            .done(function (response) {
+                showMessage(response.message, "success")
+            })
+            .fail(function (error) {
+                console.log(error)
+                showMessage(error.responseJSON.message || "Erreur serveur", "error")
+            })
+        })
+
+        
+        $("#import_cat").on("input", function (e) {
+            const input = this;
+            const files = input.files
+            const label = $(input).siblings("label")
+
+            if(files.length > 0) {
+                label.empty()
+                const container = $(`<p></p>`).appendTo(label)
+
+                for (let file of files) {
+                    container.append(`${file.name}<br>`)
+                }
+            }
+            else {
+                label.append(`Importer&nbsp;...&nbsp;<i class="lni lni-upload"></i>`)
+            }        
+        })
+
+        $("#import_cat_form").submit(function (e) {
+            e.preventDefault()
+
+            console.log(this)
+
+            const data = new FormData(this)
+
+            console.log(data)
+
+            $.ajax({
+                url: '/categories/import',
+                type: 'POST',
+                data: data,
+                processData: false,
+                contentType: false,
+            })
+            .done(function (response) {
+                showMessage(response.message, "success")
+            })
+            .fail(function (error) {
+                console.log(error)
+                showMessage(error.responseJSON.message || "Erreur serveur", "error")
+            })
+        })
+    </script>
+</html>

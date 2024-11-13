@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <%- include('./includes/head', {title: "Session - Pharmat", style: "session"}); %>
+    <body>
+    <%- include('./includes/messages'); %>
+    <%- include('./includes/session_header', {questionNumber: questionNumber, active:active, answered:answered}) %>
+    <main>
+        <section>
+            <div class="question_container">
+                <form class="answers_form">
+                    <div id="content">
+                        <h3 class="question"><%= question.question %></h3>
+                        <input type="hidden" name="questionIndex" value="<%= active %>">
+                        <% question.answers.forEach((answer, key) => { %>
+
+                            <label class="answer_container" for="answer<%= key %>">
+                                <input type="<%= question.type == "QCS" ? 'radio' : 'checkbox' %>" id="answer<%= key %>" name="answer" value="<%= key %>" required="true"  <% question.userAnswers.includes(key) ? "checked" : "" %>>
+                                <p class="response_label"><%= answer %></p>
+                            </label>
+                        <% }); %>
+                    </div>
+                    <button class="form_session_button send_answer_button" type="button">Valider</button>
+                </form>
+                
+            </div>
+            <div class="session_progress">
+                <div class="progress_bar">
+                    <div class="progress" style="width: <%= (answered.length / questionNumber) * 100 %>%"></div>
+                </div>
+                <p class="progress_label"><%= active %> / <%= questionNumber %></p>
+            </div>
+        </section>
+    </main>
+    <script>
+        const sessionId = JSON.parse('<%- JSON.stringify(sessionId) %>');
+        const questionNumber = JSON.parse('<%- JSON.stringify(questionNumber) %>');
+        // Function to update the progress bar
+        function updateProgressBar(questionsAnswered, totalQuestions) {
+            const progress = (questionsAnswered / totalQuestions) * 100;
+            const progressBar = document.querySelector('.progress');
+            progressBar.style.width = `${progress}%`;
+            const progressText = document.querySelector('.session_progress p');
+            progressText.textContent = `${questionsAnswered} / ${totalQuestions}`;
+        }
+
+        
+        $("header").children().click((e) => {
+            const index = e.target.getAttribute('data-index');
+            socket.emit('session:chooseQuestion', index, sessionId);
+        });
+
+        // Function to update the header
+        function updateHeader(questionNumber, active, answered, score = null) {
+            $(".index_box").each(function (i) {
+                const index = parseInt($(this).data('index'));
+                $(this).removeClass('active', 'answered');
+                $(this).addClass(active == index ? 'active' : '');
+                if(score == null && answered.length > 0) {
+                    $(this).addClass(answered.includes(index) ? 'answered' : '');
+                }
+                else if (score != null){
+                    switch(score[index]) {
+                        case 2:
+                            $(this).addClass('correct');
+                            break;
+                        case 1:
+                            $(this).addClass('half');
+                            break;
+                        case 0.4:
+                            $(this).addClass('meh');
+                            break;
+                        case 0:
+                            $(this).addClass('wrong');
+                            break;
+                        default:
+                            $(this).addClass('wrong');
+                    }
+
+                }
+            });
+            const headerWidth = $("header").width();
+            const activeChildWidth = $(".index_box.active").width();
+            const marginLeft = (headerWidth - activeChildWidth) / 2;
+            $(".index_box.active")[0].scrollIntoView({behavior: "smooth", block: "center"});
+        }
+
+        //Function to updateAnswerBox to expand the clickable answer box
+        /*function updateAnswerBox() {
+            $(".answer_container").click((e) => {
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                e.preventDefault();
+                const input = $(e.currentTarget).find("input");
+                input.prop('checked', !input.prop('checked'));
+            });
+        }
+        updateAnswerBox();*/
+
+
+        // Connect to the server using Socket.IO
+        const socket = io();
+
+        socket.emit('session:join', sessionId);
+
+        // Function to display a question
+        function displayNewQuestion(question, activeIndex) {
+            const questionContainer = document.querySelector('.question_container');
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <h3 class="question">${question.question}</h3>
+                <input type="hidden" name="questionIndex" value="${activeIndex}">
+            `;
+            new Map(question.answers).forEach((answer, key) => {
+                content.innerHTML += `
+                    <label class="answer_container" for="answer${key}">
+                        <input type="${question.type == "QCS" ? 'radio' : 'checkbox'}" id="answer${key}" name="answer" value="${key}" required="true" ${question.userAnswers.includes(key) ? "checked" : "" }>
+                        <p class="response_label">${answer}</p>
+                    </label>
+                `;
+            });
+            //updateAnswerBox();
+        }
+
+        // Event listener for updating the question
+        socket.on('session:newQuestion', (question, activeIndex) => {
+            displayNewQuestion(question, activeIndex);
+        });
+
+        // Event listener for updating the overlay
+        socket.on('session:updateOverlay', (questionsAnswered, activeIndex, answered) => {
+            
+            updateProgressBar(questionsAnswered, questionNumber);
+
+            updateHeader(questionNumber, activeIndex, answered);
+        });
+
+        // Event listener for ending the session
+        socket.on('session:finished', () => {
+            $(".end_session_button").remove();
+            $("<button class='form_session_button end_session_button'>Terminer la session</button>").appendTo(".answers_form").click((e) => {
+                e.preventDefault();
+                socket.emit('session:terminate', sessionId);
+            });
+        });
+
+        // Event listener for getting the results
+        socket.on('session:ended', () => {
+            $(".send_answer_button").remove();
+            $(".end_session_button").remove();
+            $("<button class='form_session_button save_session_button'>Enregistrer la session</button>").appendTo(".answers_form").click((e) => {
+                e.preventDefault();
+                socket.emit('session:save', sessionId);
+            });
+            $("<button class='form_session_button quit_session_button'>Quitter sans enregistrer</button>").appendTo(".answers_form").click((e) => {
+                e.preventDefault();
+                socket.emit('session:quit', sessionId);
+                window.location.href = "/dashboard";
+            });
+        });
+
+        // Event listener for getting the results
+        socket.on('session:seeResult', (question, activeIndex) => {
+            const questionContainer = document.querySelector('.question_container');
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <h3 class="question">${question.question}</h3>
+                <input type="hidden" name="questionIndex" value="${activeIndex}">
+            `;
+            new Map(question.answers).forEach((answer, key) => {
+                content.innerHTML += `
+                    <div class="answer_container">
+                        <label for="answer${key}" style="color: ${question.correct.includes(key) ? (question.userAnswers.includes(key) ? 'green' : 'orange') : (question.userAnswers.includes(key) ? 'red' : '')}">${answer}</label>
+                    </div>
+                `;
+            });
+        });
+        
+        // Event listener for updating the endgame overlay
+        socket.on('session:updateEndgameOverlay', (errorNumber, scores, questionScore, activeIndex, sessionScore, maxScore) => {
+            updateHeader(questionNumber, activeIndex, [], scores);
+            $(".session_progress").empty();
+            $(".session_progress").text(errorNumber + " erreur"+ (errorNumber > 1 ? 's' : '') +" => " + questionScore + "/2" + " - Total " + sessionScore + "/" + maxScore);
+        });
+
+        // Event listener for saving the session
+        socket.on('session:saved', (message, type, sessionId) => {
+            showMessage(message, "success");
+            switch(type) {
+                case 'training':
+                    window.location.href = "/training/"+sessionId;
+                    break;
+                case 'revision':
+                    window.location.href = "/revision/";
+                    break;
+                default:
+                    window.location.href = "/dashboard";
+            }
+        });
+
+        // Event listener for showing error messages
+        socket.on('session:error', (message) => {
+            showMessage(message, "error");
+        });
+
+        // Event listener for showing messages
+        socket.on('session:messages', (message) => {
+            showMessage(message, "info");
+        });
+
+        $(".send_answer_button").click((e) => {
+            e.preventDefault();
+            const answers = [];
+            $("input[name='answer']:checked").each(function() {
+                answers.push($(this).val());
+            });
+            
+            const questionIndex = $("input[name='questionIndex']").val();
+
+            if(answers.length === 0) {
+                showMessage("Veuillez sélectionner au moins une réponse", "error");
+                return;
+            }
+            socket.emit('session:answer', answers, questionIndex, sessionId);
+
+            // Clear the checked radio button
+            //$("input[name='answer']").prop('checked', false);
+        });
+
+        /*// Event listener for receiving the next question
+        socket.on('session:nextQuestion', () => {
+            // Generate a random answer
+            const randomAnswer = Math.floor(Math.random() * question.answers.length);
+            
+            // Send the random answer to the server
+            socket.emit('session:answer', [randomAnswer], questionIndex, sessionId);
+        });*/
+    </script>
+    </body>
+</html>

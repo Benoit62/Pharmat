@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <%- include('./includes/head', {title: "QCM - Pharmat", style: "dashboards"}); %>
+  <body>
+    <%- include('./includes/messages'); %>
+    <main>
+      <div class="modes_container">
+        <div class="mode">
+          <div class="header_mode">
+            <a href="/training" class="session_start_button green">Entrainement <i class="fa-solid fa-pen-clip"></i></a>
+            <% if(lastTrainingSession) { %>
+              <div class="fast_restart">
+                <div class="fast_restart_text">
+                  <h4>Relancer la dernière session</h4>
+                  <div><%= lastTrainingSession.year %> - <%= lastTrainingSession.size %> questions</div>
+                </div>
+                <div class="fast_restart_button green"><i class="fa-solid fa-play"></i></div>
+                <input type="hidden" name="year" value="<%= lastTrainingSession.year %>">
+                <input type="hidden" name="size" value="<%= lastTrainingSession.size %>">
+                <input type="hidden" name="type" value="training">
+              </div>
+            <% } %>
+          </div>
+        </div>
+        <div class="mode">
+          <div class="header_mode">
+            <a href="/revision" class="session_start_button">Révisions <i class="fa-solid fa-book-open"></i></a>
+            <% if(lastRevisionSession) { %>
+              <div class="fast_restart">
+                <div class="fast_restart_text">
+                  <h4>Continuer les révisions</h4>
+                  <div><%= lastRevisionSession.year %> - 10 questions</div>
+                </div>
+                <div class="fast_restart_button blue"><i class="fa-solid fa-play"></i></div>
+                <input type="hidden" name="year" value="<%= lastRevisionSession.year %>">
+                <input type="hidden" name="size" value="10">
+                <input type="hidden" name="type" value="revision">
+              </div>
+            <% } %>
+          </div>
+        </div>
+        <div class="mode">
+          <div class="header_mode">
+            <a href="/exam" class="session_start_button orange">Examen <i class="fa-solid fa-graduation-cap"></i></a>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      $(".fast_restart_button").click(function() {
+        var year = $(this).siblings("input[name='year']").val();
+        var size = $(this).siblings("input[name='size']").val();
+        var type = $(this).siblings("input[name='type']").val();
+        var url = "/"+type+"/start";
+        $.ajax({
+          url: url,
+          type: 'POST',
+          data: {
+              year: year,
+              amount: size
+          },
+          success: (data) => {
+              showMessage(data.message, "success");
+              console.log(data);
+              setTimeout(() => {
+                  window.location.href = '/training/'+data.sessionId;
+              }, 1000);
+          },
+          error: (err) => {
+              showMessage(err.responseJSON.message, "error");
+          }
+        });
+      });
+    </script>
+    <%- include('./includes/nav'); %>
+    </body>
+</html>

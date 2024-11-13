@@ -1,0 +1,36 @@
+main {
+    max-height: 98%!important;
+    height: 98%!important;
+    text-align: center;
+}
+
+form {
+    width: 90%;
+    height: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+form input {
+    border: 2px solid var(--main-green);
+    border-radius: 10px;
+    padding: 4%;
+    box-sizing: border-box;
+    font-size: 140%;
+    outline: none;
+}
+
+form input.log {
+    border: 2px solid var(--main-blue);
+}
+
+
+@media screen and (min-width: 1024px) {
+    form {
+        width: 50%;
+        height: 60%;
+    }
+}

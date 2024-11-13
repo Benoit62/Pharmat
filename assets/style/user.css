@@ -1,0 +1,137 @@
+.users_container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.user_list_item {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: fit-content;
+    text-align: center;
+}
+
+.content_item {
+    margin: 5px;
+    font-weight: bold;
+}
+
+.list_action_items {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.action_item {
+    margin: 0 5px;
+    cursor: pointer;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.action_item.see {
+    background-color: var(--main-blue);
+}
+
+.action_item.edit {
+    background-color: var(--main-orange);
+}
+
+.action_item.delete {
+    background-color: var(--main-red);
+}
+
+
+
+.user_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    width: 95%;
+}
+
+.user_info {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.identity {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 10px;
+    font-size: 150%;
+    font-weight: bold;
+}
+
+.identity p {
+    margin: 5px 0;
+}
+
+.identity i {
+    color: var(--main-blue);
+}
+
+.role_label {
+    font-weight: bold;
+    background-color: var(--main-green);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 60%;
+}
+
+
+.user_action_items {
+    margin: 20px 0;
+}
+
+
+
+
+.user_history {
+    width: 95%;
+}
+
+.history_items {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    
+}
+
+.each_session_history {
+    width: 380px!important;
+}
+
+#load_more_history_button {
+    margin: 10px auto;
+    display: block;
+    padding: 7px 15px;
+    background-color: var(--main-blue);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 140%;
+}
+
+#hide_more_history_button {
+    margin: 10px auto;
+    display: block;
+    padding: 7px 15px;
+    background-color: var(--main-red);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 140%;
+}

@@ -1,0 +1,233 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100dvh;
+    width: 100dvw;
+    overflow: hidden;
+    font-family: system-ui;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    font-family: inherit;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+p {
+    margin: 0;
+}
+
+main {
+    width: 100%;
+    height: 90%;
+    overflow-y: scroll;
+    padding: 2% 1%;
+    box-sizing: border-box;
+}
+
+h1 {
+    margin: 0.3em 0;
+}
+
+h2 {
+    margin: 0.2em 0;
+}
+
+input {
+    font-family: system-ui;
+}
+
+/* Définition de variables CSS pour les couleurs */
+:root {
+    --main-blue: #3e69b2;
+    --light-blue: #b3cdf6;
+    --light-light-blue: #edf4ff;
+    --dark-blue: #00245e;
+    --main-green: #3eb250;
+    --light-green: #b3f6c4;
+    --main-grey: #4b4a53;
+    --main-red: #b23e3e;
+    --main-orange: #ff8c00;
+    --main-yellow: #ffcc00;
+}
+
+
+.blue_button, .green_button {
+    display: block;
+    width: fit-content;
+    padding: 4% 6%;
+    border-radius: 10px;
+    color: white;
+    font-weight: bolder;
+    margin: 10px auto;
+    font-size: 120%;
+    border: none;
+    cursor: pointer;
+}
+
+.blue_button {
+    background-color: var(--main-blue);
+}
+
+.green_button {
+    background-color: var(--main-green);
+}
+
+
+
+/* Barre de navigation */
+
+footer.admin {
+    height: 10%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: var(--main-green);
+    font-size: 200%;
+}
+
+footer.admin a {
+    width: 33%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+footer.nav {
+    height: 10%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: var(--main-green);
+    font-size: 200%;
+}
+
+footer.nav a {
+    width: 33%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* Color palette for answers */
+
+.great {
+    border-color: var(--main-blue)!important;
+}
+
+.great.back {
+    background-color: var(--main-blue)!important;
+}
+
+.great.item {
+    color: var(--main-blue)!important;
+}
+
+.good {
+    border-color: var(--main-green)!important;
+}
+
+.good.back {
+    background-color: var(--main-green)!important;
+}
+
+.good.item {
+    color: var(--main-green)!important;
+}
+
+.poor {
+    border-color: var(--main-yellow)!important;
+}
+
+.poor.back {
+    background-color: var(--main-yellow)!important;
+}
+
+.poor.item {
+    color: var(--main-yellow)!important;
+}
+
+.bad {
+    border-color: var(--main-orange)!important;
+}
+
+.bad.back {
+    background-color: var(--main-orange)!important;
+}
+
+.bad.item {
+    color: var(--main-orange)!important;
+}
+
+.terrible {
+    border-color: var(--main-red)!important;
+}
+
+.terrible.back {
+    background-color: var(--main-red)!important;
+}
+
+.terrible.item {
+    color: var(--main-red)!important;
+}
+
+.unknow {
+    border-color: var(--main-grey)!important;
+}
+
+.unknown.back {
+    background-color: var(--main-grey)!important;
+}
+
+.unknown.item {
+    color: var(--main-grey)!important;
+}
+
+
+
+/* Text color */
+
+
+/* Responsive */
+
+@media screen and (min-width: 1024px) {
+    main {
+        height: 100%;
+        width: 94%;
+        margin-left: 6%;
+    }
+
+    footer.admin {
+        font-size: 300%;
+        flex-direction: column;
+        width: fit-content;
+        height: auto;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        border-radius: 10px;
+    }
+
+    
+    footer.admin a {
+        width: auto;
+        height: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        box-sizing: border-box;
+    }
+}

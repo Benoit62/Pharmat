@@ -1,0 +1,241 @@
+@import url("special/input_range.css");
+
+.modes_container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.mode {
+    width: 100%;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #333;
+    background-color: #fff;
+}
+
+.session_start_button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    background-color: var(--main-blue);
+    cursor: pointer;
+    font-size: 22px;
+}
+
+.session_start_button.green {
+    background-color: var(--main-green);
+}
+
+.session_start_button.orange {
+    background-color: var(--main-orange);
+}
+
+.revision_reset_button {
+    width: auto;
+    padding: 10px 20px;
+    margin: 30px auto 10px;
+    border: none;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    background-color: var(--main-red);
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+}
+
+
+
+
+.years_container {
+    width: 100%;
+    border: 4px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.year_select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.qcm_range_div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.qcm_range {
+    width: 85%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+}
+
+.qcm_amout {
+    width: 15%;
+    padding: 10px;
+    border: none;
+    font-size: inherit;
+}
+
+
+
+
+
+
+
+
+/* Revision */
+
+
+.year_revision_progress {
+    width: 100%;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    font-size: 16px;
+    color: #333;
+    background-color: var(--light-green);
+}
+
+.year_revision_progress .progress_bar {
+    width: 0;
+    height: 20px;
+    background-color: var(--main-green);
+    border-radius: 20px;
+}
+
+
+.revision_answers_overview {
+    width: 100%;
+    margin: 10px 0;
+    padding: 5px;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    flex-basis: 0;
+}
+
+.answer_dot {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    margin: 2px;
+    background-color: var(--main-grey);
+    font-size: 10px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.current_revision_score {
+    text-align: center;
+    font-size: 20px;
+}
+
+
+.old_revision_sessions_preview {
+    width: 100%;
+    border: #333 solid 2px;
+    border-radius: 20px;
+    padding: 7px 15px;
+    margin: 10px auto;
+}
+
+.old_revision_session_infos {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 18px;
+}
+
+.old_revision_session_actions {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.old_revision_session_actions a {
+    padding: 5px 10px;
+    border: 1px solid var(--main-blue);
+    border-radius: 5px;
+    color: black;
+    cursor: pointer;
+    margin: 10px auto 5px;
+}
+
+
+
+/* Fast restart */
+
+.fast_restart {
+    width: 90%;
+    height: 60px;
+    margin: 10px auto;
+    display: flex;
+    border: solid 1px #ccc;
+    border-radius: 15px;
+}
+
+.fast_restart_text {
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 5px 0px 5px 10px;
+}
+
+.fast_restart_text h4 {
+    margin: 0;
+}
+
+.fast_restart_button {
+    width: 25%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 30px;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.fast_restart_button.green {
+    background-color: var(--main-green);
+}
+
+.fast_restart_button.blue {
+    background-color: var(--main-blue);
+}

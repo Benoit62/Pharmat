@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <%- include('./includes/head', {title: "Users - Pharmat", style: "user"}); %>
+    <body>
+        <%- include('./includes/messages'); %>
+        <main>
+            <div class="users_container">
+                <% users.forEach(user => { %>
+                    <div class="user_list_item">
+                        <div class="content_item"><%= user.name %></div>
+                        <div class="content_item"><%= user.mail %></div>
+                        <div class="list_action_items">
+                            <a href="/users/<%= user.id_user %>" class="action_item see"><i class="fa-solid fa-eye"></i> Voir</a>
+                            <a href="/users/<%= user.id %>/edit" class="action_item edit"><i class="fa-solid fa-pen"></i> Modifier</a>
+                            <a href="/users/<%= user.id %>/delete" class="action_item delete"><i class="fa-solid fa-trash"></i> Supprimer</a>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </main>
+        <%- include('./includes/nav_admin'); %>
+        
+    </body>
+</html>

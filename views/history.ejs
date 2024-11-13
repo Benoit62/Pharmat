@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <%- include('./includes/head', {title: "History - Pharmat", style: "history"}); %>
+    <body>
+        <%- include('./includes/messages'); %>
+        <main>
+            <div>
+                <button data-type="training" class="history_button training_history_button">Historique des entrainements <i class="fa-solid fa-pen-clip"></i></button>
+                <button data-type="revision" class="history_button revision_history_button" >Historique des révisions <i class="fa-solid fa-book-open"></i></button>
+                <button data-type="exam" class="history_button exam_history_button" >Historique des exams <i class="fa-solid fa-graduation-cap"></i></button>
+            </div>
+
+            <div id="trainingHistory" class="training_history_preview_container" style="display: none;">
+                <!-- Session history content goes here -->
+                <% training_history.forEach(hist => { %>
+                    <% const performance = hist.score/(hist.size * 2); %>
+                    <a href="/training/history/<%= hist.id_session %>" class="each_session_history <% switch (true) {
+                        case performance >= 0.8: %>great<%
+                            break;
+                        case performance >= 0.6: %>good<%
+                            break;
+                        case performance >= 0.4: %>poor<%
+                            break;
+                        case performance >= 0.2: %>bad<%
+                            break;
+                        default: %>terrible<%
+                            break;
+                    } %>">
+                        <h2>Session <%= hist.year %> du <%= new Date(hist.date).toLocaleDateString() %></h2>
+                        <div class="infos_session">
+                            <div><i class="fa-solid fa-star"></i> <%= hist.score + "/" + (hist.size * 2) %></div>
+                            <div><i class="fa-solid fa-clipboard-question"></i> <%= hist.size %></div>
+                        </div>
+                        <!-- Add more session info here if needed -->
+                    </a>
+                <% }); %>
+            </div>
+            
+            <div id="revisionHistory" class="revision_history_preview_container" style="display: none;">
+                <% revision_history.forEach(hist => { %>
+                    <a href="/revision/history/<%= hist.year %>" class="year_revision_progress_history">
+                        <div class="progress_bar" style="width: <%= ((hist.answered * 100) / (hist.total)) === 0 ? 0 : Math.max((hist.answered * 100) / (hist.total), 4) %>%;"></div>
+                        <div class="revision_year_history"><%= hist.year %></div>
+                    </a>
+                <% }); %>
+            </div>
+
+            <div id="examHistory" style="display: none;">
+                <!-- Exams history content goes here -->
+            </div>
+        </main>
+        <script>
+            $(document).ready(() => {
+                $("button").click((e) => {
+                    if(e.target.dataset.type == "training") {
+                        showTrainingHistory();
+                    }
+                    else if(e.target.dataset.type == "revision") {
+                        showRevisionHistory();
+                    }
+                    else if(e.target.dataset.type == "exam") {
+                        showExamHistory();
+                    }
+                    else {
+                        showExamsHistory();
+                    }
+                });
+            });
+            function showTrainingHistory() {
+                document.getElementById("trainingHistory").style.display = "block";
+                document.getElementById("revisionHistory").style.display = "none";
+                document.getElementById("examHistory").style.display = "none";
+            }
+
+            function showExamHistory() {
+                document.getElementById("trainingHistory").style.display = "none";
+                document.getElementById("revisionHistory").style.display = "none";
+                document.getElementById("examHistory").style.display = "block";
+            }
+
+            function showRevisionHistory() {
+                document.getElementById("trainingHistory").style.display = "none";
+                document.getElementById("revisionHistory").style.display = "flex";
+                document.getElementById("examHistory").style.display = "none";
+            }
+        </script>
+        <%- include('./includes/nav'); %>
+    </body>
+</html>
