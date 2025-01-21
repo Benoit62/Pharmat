@@ -123,7 +123,6 @@ cron.schedule('0 22 * * *', () => {
 });
 
 const port = process.env.PORT;
-console.log(process.env.SESSION_SECRET)
 //start server at localhost:4200
 server.listen(port, () => {
     console.log(`Server listening on http://localhost:${port}`);
