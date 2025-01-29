@@ -206,7 +206,12 @@ footer.nav a {
     main {
         height: 100%;
         width: 94%;
-        margin-left: 6%;
+        margin-left: 3%;
+    }
+
+    .logo_index {
+        width: 250px;
+        margin: 0 auto;
     }
 
     footer.admin {
@@ -229,5 +234,10 @@ footer.nav a {
         justify-content: center;
         padding: 15px;
         box-sizing: border-box;
+    }
+
+    
+    .blue_button, .green_button {
+        padding: 2% 3%;
     }
 }
