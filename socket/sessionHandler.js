@@ -157,7 +157,7 @@ module.exports = (io, socket) => {
                 id_user: session.getUserID(),
                 size: session.getQuestionNumber(),
                 score: session.getSessionScore(),
-                date: new Date(),
+                date: new Date().toISOString().split('T')[0],
                 year: session.getYear()
             }
             

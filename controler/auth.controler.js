@@ -64,8 +64,8 @@ function register(req, res, next) {
                 else {
                     const confirm_id = uuidv4()
                     // Insert user in database
-                    const insertUserQuery = 'INSERT INTO users (name, password, mail, confirm_id, status) VALUES (?, ?, ?, ?, ?)';
-                    db.query(insertUserQuery, [safe_data.name, hash, safe_data.mail, confirm_id, "USER"], (err, insertResult) => {
+                    const insertUserQuery = 'INSERT INTO users (name, password, mail, confirm_id, status, last_login) VALUES (?, ?, ?, ?, ?, ?)';
+                    db.query(insertUserQuery, [safe_data.name, hash, safe_data.mail, confirm_id, "USER", new Date().toISOString().split('T')[0]], (err, insertResult) => {
                         if (err) {
                             console.error('Erreur lors de l\'insertion de l\'utilisateur.trice :', err);
                             return res.status(500).json({ message: 'Erreur serveur' });

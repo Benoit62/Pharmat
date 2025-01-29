@@ -132,8 +132,8 @@ function startRevisionSession(req, res, next) {
                     return res.status(500).json({ message: 'Erreur serveur' });
                 }
 
-                const insertRevisionSession = 'INSERT INTO revision_sessions (id_user, year, total) VALUES (?, ?, ?)';
-                db.query(insertRevisionSession, [req.session.userId, safe_data.year, totalQCMs[0].total], (err, resultInsert) => {
+                const insertRevisionSession = 'INSERT INTO revision_sessions (id_user, date, year, total) VALUES (?, ?, ?, ?)';
+                db.query(insertRevisionSession, [req.session.userId, new Date().toISOString().split('T')[0], safe_data.year, totalQCMs[0].total], (err, resultInsert) => {
                     if (err) {
                         console.error('Erreur lors de la création de la session de révision', err);
                         return res.status(500).json({ message: 'Erreur serveur' });
