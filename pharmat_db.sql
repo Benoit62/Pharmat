@@ -6453,7 +6453,7 @@ INSERT INTO `qcms_categories` (`qcm_category`, `qcm`, `category`) VALUES
 CREATE TABLE `revision_sessions` (
   `id_revision` int(11) NOT NULL,
   `id_user` int(11) NOT NULL,
-  `date` date NOT NULL DEFAULT current_timestamp(),
+  `date` date NOT NULL DEFAULT current_date(),
   `year` int(11) NOT NULL,
   `answered` int(11) NOT NULL DEFAULT 0,
   `total` int(11) NOT NULL,
@@ -6494,7 +6494,7 @@ CREATE TABLE `training_sessions` (
   `id_user` int(11) NOT NULL,
   `size` int(11) NOT NULL,
   `score` float NOT NULL,
-  `date` date NOT NULL DEFAULT current_timestamp(),
+  `date` date NOT NULL DEFAULT current_date(),
   `year` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -6534,7 +6534,7 @@ CREATE TABLE `users` (
   `password` text NOT NULL,
   `confirm_id` text NOT NULL,
   `status` enum('ADMIN','USER') NOT NULL DEFAULT 'USER',
-  `last_login` date NOT NULL DEFAULT current_timestamp(),
+  `last_login` date NOT NULL DEFAULT current_date(),
   `phone` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
