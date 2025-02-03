@@ -1,5 +1,5 @@
-const accountSid = 'AC5b412cfedcf02bf7deead81daf1d7d7b';
-const authToken = 'b163b1e27b49e68e12cba7d14a7f2060';
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 
 const db = require('../modules/db');
@@ -14,7 +14,7 @@ function sendReminderSMS() {
         })
         .then(message => console.log(message.sid))*/
 
-    const queryUser = `SELECT users.*, sessions.* FROM users INNER JOIN sessions ON sessions.id_session = (SELECT id_session FROM sessions WHERE sessions.id_user = users.id_user ORDER BY sessions.id_session DESC LIMIT 1)`;
+    const queryUser = `SELECT users.*, training_sessions.* FROM users INNER JOIN training_sessions ON training_sessions.id_session = (SELECT id_session FROM training_sessions WHERE training_sessions.id_user = users.id_user ORDER BY training_sessions.id_session DESC LIMIT 1)`;
     db.query(queryUser, (err, result) => {
         if (err) {
             console.log(err);
@@ -66,7 +66,7 @@ function greetingSMS() {
         })
         .then(message => console.log(message.sid))*/
 
-    const queryPerf = `SELECT users.phone, users.name, AVG((score / (size * 2))*100) as perf FROM users INNER JOIN sessions ON sessions.id_user = users.id_user AND sessions.date = CURDATE() GROUP BY users.id_user`;
+    const queryPerf = `SELECT users.phone, users.name, AVG((score / (size * 2))*100) as perf FROM users INNER JOIN training_sessions ON training_sessions.id_user = users.id_user AND training_sessions.date = CURDATE() GROUP BY users.id_user`;
     db.query(queryPerf, (err, result) => {
         if (err) {
             console.log(err);
