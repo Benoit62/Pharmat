@@ -28,7 +28,7 @@ function sendReminderMail() {
         })
         .then(message => console.log(message.sid))*/
 
-    const queryUser = `SELECT users.*, sessions.* FROM users INNER JOIN sessions ON sessions.id_session = (SELECT id_session FROM sessions WHERE sessions.id_user = users.id_user ORDER BY sessions.id_session DESC LIMIT 1)`;
+    const queryUser = `SELECT users.*, training_sessions.* FROM users INNER JOIN training_sessions ON training_sessions.id_session = (SELECT id_session FROM training_sessions WHERE training_sessions.id_user = users.id_user ORDER BY training_sessions.id_session DESC LIMIT 1)`;
     db.query(queryUser, (err, result) => {
         if (err) {
             console.log("Error lors de la récupération des utilisateurs", err);
@@ -131,7 +131,7 @@ function greetingMail() {
         })
         .then(message => console.log(message.sid))*/
 
-    const queryPerf = `SELECT users.mail, users.name, AVG((score / (size * 2))*100) as perf FROM users INNER JOIN sessions ON sessions.id_user = users.id_user AND sessions.date = CURDATE() GROUP BY users.id_user`;
+    const queryPerf = `SELECT users.mail, users.name, AVG((score / (size * 2))*100) as perf FROM users INNER JOIN training_sessions ON training_sessions.id_user = users.id_user AND training_sessions.date = CURDATE() GROUP BY users.id_user`;
     db.query(queryPerf, (err, result) => {
         if (err) {
             console.log(err);

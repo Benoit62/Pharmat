@@ -4,18 +4,6 @@
     <body>
         <%- include('./includes/messages'); %>
         <main>
-            <% if (emptyPhone) { %>
-                <div class="modal_ask_phone_number">
-                    <div class="modal_ask_phone_number_content">
-                        <h2>Entrez votre numéro de téléphone</h2>
-                        <input type="number" id="phone_number" class="phone_number_input" placeholder="Numéro de téléphone"/>
-                        <div class="modal_button_container">
-                            <button id="submit_phone_number" class="submit_phone_number_button">Envoyer</button>
-                            <button class="close_modal_ask_phone_number">Fermer</button>
-                        </div>
-                    </div>
-                </div>
-            <% } %>
             <h2 class="welcomePhrase"><%= welcomePhrase %></h2>
 
             <p class="motivationnalPhrase"><%= motivationalPhrase %></p>
@@ -25,63 +13,4 @@
         <%- include('./includes/nav'); %>
         
     </body>
-    <% if (emptyPhone) { %>
-        <script>
-
-            const submitPhoneNumber = document.getElementById("submit_phone_number");
-            const phoneNumber = document.getElementById("phone_number");
-            
-            const phoneRegex = /^\d{10}$/;
-
-            submitPhoneNumber.addEventListener("click", () => {
-                const phone_number = phoneNumber.value;
-                if (phoneRegex.test(phone_number)) {
-                // Rest of your code
-                } else {
-                    showMessage("Veuillez entrer un numéro de téléphone valide", "error");
-                }
-            });
-
-            phoneNumber.addEventListener("input", () => {
-                phoneNumber.value = phoneNumber.value.replace(/\D/g, "");
-            });
-
-            $(document).ready(function() {
-                $("#submit_phone_number").click(function() {
-                    const phone_number = $("#phone_number").val();
-                    if (phone_number.length === 10) {
-                        $.ajax({
-                            url: "/home/phoneNumber",
-                            method: "POST",
-                            dataType: "json",
-                            data: {
-                                phoneNumber : phone_number
-                            },
-                            success: function(result) {
-                                showMessage(result.message, "success");
-                                $(".modal_ask_phone_number").hide();
-                            },
-                            error: function(err) {
-                                showMessage(err.responseJSON.message, "error");
-                            }
-                        });
-                    } else {
-                        showMessage("Veuillez entrer un numéro de téléphone valide", "error");
-                    }
-                });
-
-            });
-
-            document.querySelector(".close_modal_ask_phone_number").addEventListener("click", () => {
-                document.querySelector(".modal_ask_phone_number").style.display = "none";
-            });
-
-            document.addEventListener("click", (event) => {
-                const modalContent = document.querySelector(".modal_ask_phone_number_content");
-                if (!modalContent.contains(event.target)) {
-                    document.querySelector(".modal_ask_phone_number").style.display = "none";
-                }
-            });
-        </script>
-    <% } %>
 </html>

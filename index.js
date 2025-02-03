@@ -77,6 +77,8 @@ const stats = require('./router/stats.router');
 app.use(stats);
 const user = require('./router/user.router');
 app.use(user);
+const notif = require('./router/notif.router');
+app.use(notif);
 
 const error = require('./router/404.router');
 app.use(error);
