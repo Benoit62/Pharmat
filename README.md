@@ -53,7 +53,7 @@ src/
   bdd.js, config.js, securite.js, temps.js, evenement.js, phrases.js, outils.js
 vues/                 gabarits EJS
 public/               styles, script, logo, icônes ; identite/ = extraits du kit Identity
-migrations/           schéma SQL versionné, appliqué par outils/migrer.js
+migrations/           schéma SQL versionné et banque de questions, appliqués par outils/migrer.js
 test/                 tests (node --test)
 ```
 
@@ -91,8 +91,10 @@ npm run migrer
 npm run dev
 ```
 
-L'application écoute sur http://localhost:3000. Le premier compte se passe administrateur en
-base : `UPDATE users SET status = 'ADMIN' WHERE mail = '…';`. Les questions s'importent depuis
+L'application écoute sur http://localhost:3000. Sur une base vide, les migrations installent la
+banque de questions (`migrations/003_banque_qcm.sql` : 2 335 questions des annales 1991 à 2022,
+31 matières). Le premier compte se passe administrateur en base :
+`UPDATE users SET status = 'ADMIN' WHERE mail = '…';`. D'autres questions s'importent depuis
 l'administration (fichiers `.json` exportés par Pharmat ou `.seqa` de la première version).
 
 Tests :
@@ -109,9 +111,10 @@ minutes : export de la base, migrations (`outils/migrer.js`), bascule si `/sante
 le projet demande à la plateforme est dans `.infra/deploy.yaml` ; sa carte sur le portail des
 applications, dans `.infra/card/`.
 
-Le courriel est facultatif : sans `SMTP_HOST`, les inscriptions sont confirmées d'office, les
-rappels sont coupés et « mot de passe oublié » est masqué. Il s'active avec le relais de la
-plateforme (`addons.mail`, à venir).
+Le courriel passe par le relais de la plateforme (`addons.mail`, expéditeur
+`pharmat@benoitwattinne.fr`). Il reste facultatif : sans `SMTP_HOST` (en local par exemple), les
+inscriptions sont confirmées d'office, les rappels sont coupés et « mot de passe oublié » est
+masqué.
 
 La première version de Pharmat est conservée à l'étiquette `ancien-pharmat`.
 

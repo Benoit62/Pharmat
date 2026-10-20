@@ -7,7 +7,7 @@ import { requete, ligne } from '../bdd.js';
 import { limiteur, retourSur } from '../securite.js';
 import { actif as courrielActif, courriels, verifierDesinscription } from '../courriel.js';
 import { evenement } from '../evenement.js';
-import { flash, texte, entier, ouvrirSession } from '../outils.js';
+import { flash, texte, entier, ouvrirSession, origine } from '../outils.js';
 import { magasin } from '../sessions.js';
 
 const routes = Router();
@@ -100,7 +100,7 @@ routes.post('/inscription', async (req, res) => {
   evenement('info', 'Nouveau compte', { compte: insertId });
 
   if (idConfirmation) {
-    await courriels.confirmation({ name: valeurs.nom, mail: valeurs.mail }, idConfirmation);
+    await courriels.confirmation({ name: valeurs.nom, mail: valeurs.mail }, idConfirmation, origine(req));
     return res.render('message', {
       titre: 'Vérifie ta boîte',
       symbole: 'mail',
@@ -136,7 +136,7 @@ routes.post('/confirmation/renvoyer', async (req, res) => {
   const mail = texte(req.body.mail, 190).toLowerCase();
   if (courrielActif && essaisEnvoi(`confirmation|${req.ip}`)) {
     const u = await ligne('SELECT name, mail, confirm_id FROM users WHERE mail = ? AND confirm_id IS NOT NULL', [mail]);
-    if (u) await courriels.confirmation(u, u.confirm_id);
+    if (u) await courriels.confirmation(u, u.confirm_id, origine(req));
   }
   res.render('message', { titre: 'Lien renvoyé', symbole: 'mail', texte: 'Si un compte attend une confirmation à cette adresse, un nouveau lien vient de partir.' });
 });
@@ -158,7 +158,7 @@ routes.post('/mot-de-passe-oublie', async (req, res) => {
         'UPDATE users SET reinit_empreinte = ?, reinit_expire = UTC_TIMESTAMP() + INTERVAL 1 HOUR WHERE id_user = ?',
         [empreinte(jeton), u.id_user],
       );
-      await courriels.reinitialisation(u, jeton);
+      await courriels.reinitialisation(u, jeton, origine(req));
     }
   }
   // Même réponse dans tous les cas : on ne révèle pas quelles adresses ont un compte

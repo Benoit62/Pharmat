@@ -11,7 +11,7 @@ runtime:
   env:
     NODE_ENV: production
     URL_PUBLIQUE: https://pharmat.benoitwattinne.fr
-    MAIL_FROM: pharmat@benoitwattinne.fr   # utilisé dès que le relais de courriel sera en service
+    MAIL_FROM: pharmat@benoitwattinne.fr   # expéditeur imposé par le relais (enveloppe et From)
   secrets: [SESSION_SECRET]       # valeur aléatoire déposée par l'administrateur
   migrate: [node, outils/migrer.js]   # migrations SQL de migrations/, avant chaque bascule
 
@@ -21,5 +21,4 @@ network:
 addons:
   database: mariadb
   events: true
-  # mail: true                    # relais smtp-relay (DEC-019) : SMTP_HOST et SMTP_PORT injectés.
-                                  # À activer au signal de l'Infra (fournisseur branché), sinon 451.
+  mail: true                      # relais smtp-relay (DEC-019) : SMTP_HOST et SMTP_PORT injectés

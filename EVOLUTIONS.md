@@ -5,12 +5,7 @@ a terminé et fiabilisé l'existant ; rien ici n'est commencé.
 
 ## À faire dès que possible
 
-1. **Activer le courriel.** Le relais de la plateforme existe (DEC-019, 60 courriels par heure
-   pour Pharmat) ; au signal de l'Infra (fournisseur branché) : décommenter
-   `addons: { mail: true }` dans `.infra/deploy.yaml` et pousser. Rien d'autre à changer dans le
-   code (confirmation d'adresse, mot de passe oublié, rappels et bilans s'activent seuls). Les
-   comptes créés avant restent valides.
-2. **Compléter les matières.** Un peu plus de la moitié des questions ont une matière (aucune
+1. **Compléter les matières.** Un peu plus de la moitié des questions ont une matière (aucune
    pour 2012 à 2022). Les classer, depuis l'administration ou par un fichier importé, rend le
    filtre par matière et les statistiques par matière bien plus utiles.
 

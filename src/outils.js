@@ -32,3 +32,8 @@ export function ouvrirSession(req, idUtilisateur) {
     });
   });
 }
+
+/** L'adresse publique par laquelle la requête est arrivée (https derrière Traefik). */
+export function origine(req) {
+  return `${req.protocol}://${req.get('host')}`;
+}

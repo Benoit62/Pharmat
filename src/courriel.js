@@ -39,11 +39,11 @@ export function verifierDesinscription(idUtilisateur, jeton) {
  * Gabarit commun : un titre, des paragraphes, un bouton. Fond blanc (charte : le corps des
  * courriels reste blanc), couleurs de Pharmat, version texte jointe.
  */
-function gabarit({ titre, paragraphes, bouton, pied }) {
+function gabarit({ titre, paragraphes, bouton, pied, origine = config.urlPublique }) {
   const html = `<!doctype html><html lang="fr"><body style="margin:0;background:#ffffff;font-family:Helvetica,Arial,sans-serif;color:#13241d">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px">
-<tr><td style="padding-bottom:24px"><img src="${config.urlPublique}/img/logo-courriel.png" width="40" height="40" alt="" style="vertical-align:middle;border-radius:10px"> <span style="font-size:20px;font-weight:bold;vertical-align:middle;padding-left:8px">Pharmat</span></td></tr>
+<tr><td style="padding-bottom:24px"><img src="${origine}/img/logo-courriel.png" width="40" height="40" alt="" style="vertical-align:middle;border-radius:10px"> <span style="font-size:20px;font-weight:bold;vertical-align:middle;padding-left:8px">Pharmat</span></td></tr>
 <tr><td style="font-size:22px;line-height:30px;font-weight:bold;padding-bottom:16px">${echapper(titre)}</td></tr>
 ${paragraphes.map((p) => `<tr><td style="font-size:16px;line-height:25px;padding-bottom:14px;color:#33463d">${echapper(p)}</td></tr>`).join('')}
 ${bouton ? `<tr><td style="padding:12px 0 24px"><a href="${bouton.url}" style="display:inline-block;background:#127a4a;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:999px">${echapper(bouton.texte)}</a></td></tr>` : ''}
@@ -82,26 +82,32 @@ function piedRappel(id) {
   return `Tu reçois ce courriel parce que les rappels sont activés sur ton compte Pharmat. <a href="${config.urlPublique}/compte" style="color:#51635b">Régler mes courriels</a> · <a href="${lienDesinscription(id)}" style="color:#51635b">Ne plus rien recevoir</a>`;
 }
 
+// Confirmation et réinitialisation : les liens partent de l'adresse où la personne s'est
+// inscrite (pharmat. ou pharmat-essai. pendant une répétition). Traefik n'achemine ici que les
+// noms déclarés : l'en-tête Host ne peut pas être détourné. Les rappels du soir, sans requête,
+// prennent URL_PUBLIQUE.
 export const courriels = {
-  confirmation: (u, idConfirmation) =>
+  confirmation: (u, idConfirmation, origine = config.urlPublique) =>
     envoyer({
       a: u.mail,
       sujet: 'Confirme ton adresse',
       contenu: gabarit({
         titre: `Bienvenue sur Pharmat, ${u.name}`,
         paragraphes: ['Un dernier pas avant ta première série : confirme ton adresse en cliquant sur le bouton.', "Si tu n'as pas créé de compte, ignore ce message."],
-        bouton: { texte: 'Confirmer mon adresse', url: `${config.urlPublique}/confirmation/${idConfirmation}` },
+        bouton: { texte: 'Confirmer mon adresse', url: `${origine}/confirmation/${idConfirmation}` },
+        origine,
       }),
     }),
 
-  reinitialisation: (u, jeton) =>
+  reinitialisation: (u, jeton, origine = config.urlPublique) =>
     envoyer({
       a: u.mail,
       sujet: 'Choisir un nouveau mot de passe',
       contenu: gabarit({
         titre: 'Nouveau mot de passe',
         paragraphes: ['Tu as demandé à changer de mot de passe. Le lien est valable une heure.', "Si ce n'est pas toi, ignore ce message : ton mot de passe reste le même."],
-        bouton: { texte: 'Choisir un mot de passe', url: `${config.urlPublique}/reinitialiser/${jeton}` },
+        bouton: { texte: 'Choisir un mot de passe', url: `${origine}/reinitialiser/${jeton}` },
+        origine,
       }),
     }),
 
