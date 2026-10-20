@@ -1,0 +1,72 @@
+<%- include('partiels/haut') %>
+<div class="pm-salut">
+  <h1><%= phrase %></h1>
+  <p><%= encouragement %></p>
+</div>
+
+<% if (partieEnCours) { const p = partieEnCours; %>
+<div class="pm-reprise">
+  <div>
+    <b><%= p.mode === 'examen' ? 'Examen blanc en cours' : p.mode === 'revision' ? 'Révision en cours' : 'Série en cours' %> · <%= p.libelle %></b>
+    <span class="bw-petit"><%= Object.keys(p.reponses).length %> réponse<%= Object.keys(p.reponses).length > 1 ? 's' : '' %> sur <%= p.ids.length %> question<%= p.ids.length > 1 ? 's' : '' %></span>
+  </div>
+  <a class="bw-btn bw-btn--principal" href="/partie"><%- icone('play') %>Reprendre</a>
+</div>
+<% } %>
+
+<div class="pm-modes">
+  <article class="bw-carte pm-mode">
+    <span class="bw-medaillon bw-medaillon--grand"><%- icone('dumbbell') %></span>
+    <h2>Entraînement</h2>
+    <p>Une série tirée au hasard, dans une année, toutes les annales ou une matière.</p>
+    <div class="pm-mode__actions">
+      <form method="post" action="/entrainement" class="pm-en-ligne">
+        <input type="hidden" name="nombre" value="20">
+        <button class="bw-btn bw-btn--principal" type="submit"><%- icone('shuffle') %>Série rapide</button>
+      </form>
+      <a class="bw-btn bw-btn--secondaire" href="/entrainement">Choisir</a>
+    </div>
+    <% if (derniere) { %>
+    <form method="post" action="/entrainement">
+      <input type="hidden" name="annee" value="<%= derniere.year ?? '' %>">
+      <input type="hidden" name="matiere" value="<%= derniere.id_category ?? '' %>">
+      <input type="hidden" name="nombre" value="<%= derniere.size %>">
+      <button class="bw-btn bw-btn--discret bw-btn--petit" type="submit"><%- icone('rotate-ccw') %>Refaire comme la dernière fois (<%= derniere.year ?? 'toutes années' %>, <%= derniere.size %> questions)</button>
+    </form>
+    <% } %>
+  </article>
+
+  <article class="bw-carte pm-mode">
+    <span class="bw-medaillon bw-medaillon--grand bw-medaillon--lagon"><%- icone('book-open') %></span>
+    <h2>Révision</h2>
+    <% if (revision) { %>
+      <p>Annales <%= revision.annee %> : <%= revision.faites %> questions sur <%= revision.total %><% if (revision.reussite != null) { %>, <%= revision.reussite %> % de réussite<% } %>.</p>
+      <div class="pm-progression pm-progression--lagon" role="img" aria-label="<%= Math.round(revision.faites / revision.total * 100) %> % de l’année faite"><span style="--p: <%= revision.faites / revision.total * 100 %>%"></span></div>
+      <div class="pm-mode__actions">
+        <form method="post" action="/revision" class="pm-en-ligne">
+          <input type="hidden" name="annee" value="<%= revision.annee %>"><input type="hidden" name="nombre" value="20">
+          <button class="bw-btn bw-btn--sapin" type="submit"><%- icone('play') %>Continuer <%= revision.annee %></button>
+        </form>
+        <a class="bw-btn bw-btn--secondaire" href="/revision">Toutes les années</a>
+      </div>
+    <% } else { %>
+      <p>Une année entière, étape par étape : Pharmat garde ta progression et ne repose que ce qui reste.</p>
+      <div class="pm-mode__actions"><a class="bw-btn bw-btn--sapin" href="/revision">Choisir une année</a></div>
+    <% } %>
+  </article>
+
+  <article class="bw-carte pm-mode">
+    <span class="bw-medaillon bw-medaillon--grand bw-medaillon--ocre"><%- icone('graduation-cap') %></span>
+    <h2>Examen blanc</h2>
+    <p>Une annale complète, chronométrée, comme le jour du concours.<% if (examens) { %> Déjà <%= examens %> examen<%= examens > 1 ? 's' : '' %> passé<%= examens > 1 ? 's' : '' %>.<% } %></p>
+    <div class="pm-mode__actions"><a class="bw-btn bw-btn--secondaire" href="/examen"><%- icone('timer') %>Préparer un examen</a></div>
+  </article>
+</div>
+
+<dl class="bw-chiffres">
+  <div class="bw-chiffre"><dt>Jours d’affilée</dt><dd><%= chiffres.serie %></dd></div>
+  <div class="bw-chiffre"><dt>Questions aujourd’hui</dt><dd><%= chiffres.aujourdhui %></dd></div>
+  <div class="bw-chiffre"><dt>Questions sur 7 jours</dt><dd><%= chiffres.semaine %></dd></div>
+  <div class="bw-chiffre"><dt>Réussite sur 7 jours</dt><dd><%= chiffres.reussite ?? '—' %><% if (chiffres.reussite != null) { %><small>%</small><% } %></dd></div>
+</dl>
+<%- include('partiels/bas') %>

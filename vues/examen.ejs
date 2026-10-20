@@ -1,0 +1,21 @@
+<%- include('partiels/haut') %>
+<div class="pm-etroit">
+  <div class="pm-tete">
+    <p class="bw-surtitre">Examen blanc</p>
+    <h1>Une annale complète, chronométrée</h1>
+    <p>Toutes les questions d’une année, <%= format.nombre(secondes / 60) %> minute<%= secondes >= 120 ? "s" : "" %> par question en moyenne. Tu peux naviguer librement entre les questions ; à la fin du temps, la copie est rendue telle quelle et une question sans réponse vaut 0.</p>
+  </div>
+  <form class="bw-formulaire" method="post" action="/examen" data-confirmer="Lancer l’examen ? Le chronomètre démarre tout de suite.">
+    <div class="bw-champ">
+      <label class="bw-libelle" for="annee">Année</label>
+      <select class="bw-liste" id="annee" name="annee" required>
+        <% for (const a of annees) { %>
+        <option value="<%= a.annee %>"><%= a.annee %> · <%= a.questions %> questions · <%= format.duree(a.questions * secondes) %><% if (a.meilleur != null) { %> · meilleur : <%= a.meilleur %> %<% } %></option>
+        <% } %>
+      </select>
+      <span class="bw-aide">De 2003 à 2011, l’annale réunit deux épreuves (120 questions).</span>
+    </div>
+    <div><button class="bw-btn bw-btn--principal bw-btn--grand" type="submit"><%- icone('timer') %>Commencer l’examen</button></div>
+  </form>
+</div>
+<%- include('partiels/bas') %>

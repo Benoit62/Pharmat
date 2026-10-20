@@ -1,0 +1,67 @@
+<%- include('partiels/haut') %>
+<div class="pm-etroit">
+  <div class="pm-tete"><h1>Mon compte</h1><p><%= compte.mail %> · inscription <%= compte.cree_le ? 'le ' + format.date(compte.cree_le) : 'avant 2026' %> · <%= compte.series %> série<%= compte.series > 1 ? 's' : '' %></p></div>
+  <div class="pm-panneaux">
+    <section class="pm-panneau" aria-labelledby="t-profil">
+      <h2 id="t-profil"><%- icone('user') %>Prénom</h2>
+      <form class="bw-rangee" method="post" action="/compte/profil">
+        <label class="bw-visuellement-cache" for="nom">Prénom</label>
+        <input class="bw-saisie" style="max-width:280px" id="nom" name="nom" required minlength="2" maxlength="30" value="<%= compte.name %>" autocomplete="given-name">
+        <button class="bw-btn bw-btn--secondaire" type="submit">Enregistrer</button>
+      </form>
+    </section>
+
+    <section class="pm-panneau" id="courriels" aria-labelledby="t-courriels">
+      <h2 id="t-courriels"><%- icone('bell') %>Courriels</h2>
+      <% if (!courrielActif) { %>
+        <div class="bw-message"><%- icone('info') %><p>L’envoi de courriels n’est pas encore en service : tes préférences seront appliquées dès qu’il le sera.</p></div>
+      <% } %>
+      <form class="bw-pile" method="post" action="/compte/courriels">
+        <label class="bw-choix"><input type="checkbox" class="bw-interrupteur" role="switch" name="rappel" value="oui"<% if (compte.notif_rappel) { %> checked<% } %>>
+          <span><strong>Rappel du soir</strong> (20 h 30) — quand tu n’as pas encore révisé ce jour-là : le soir même pour garder ta série de jours, puis espacé si tu t’absentes.</span></label>
+        <label class="bw-choix"><input type="checkbox" class="bw-interrupteur" role="switch" name="bilan" value="oui"<% if (compte.notif_bilan) { %> checked<% } %>>
+          <span><strong>Bilan du jour</strong> (22 h) — questions répondues et réussite, les jours où tu as révisé.</span></label>
+        <div><button class="bw-btn bw-btn--secondaire" type="submit">Enregistrer</button></div>
+      </form>
+    </section>
+
+    <section class="pm-panneau" aria-labelledby="t-theme">
+      <h2 id="t-theme"><%- icone('sun') %>Apparence</h2>
+      <div class="bw-rangee">
+        <div class="bw-theme" role="group" aria-label="Thème">
+          <button type="button" data-theme-choix="clair" aria-label="Thème clair" aria-pressed="false"><%- icone('sun') %></button>
+          <button type="button" data-theme-choix="sombre" aria-label="Thème sombre" aria-pressed="false"><%- icone('moon') %></button>
+          <button type="button" data-theme-choix="systeme" aria-label="Thème du système" aria-pressed="false"><%- icone('monitor') %></button>
+        </div>
+        <span class="bw-petit">Clair par défaut ; ton choix est gardé sur cet appareil.</span>
+      </div>
+    </section>
+
+    <section class="pm-panneau" id="mot-de-passe" aria-labelledby="t-mdp">
+      <h2 id="t-mdp"><%- icone('lock') %>Mot de passe</h2>
+      <form class="bw-formulaire" method="post" action="/compte/mot-de-passe">
+        <div class="bw-champ"><label class="bw-libelle" for="actuel">Mot de passe actuel</label><input class="bw-saisie" id="actuel" name="actuel" type="password" autocomplete="current-password" required></div>
+        <div class="bw-formulaire__ligne">
+          <div class="bw-champ"><label class="bw-libelle" for="mot_de_passe">Nouveau</label><input class="bw-saisie" id="mot_de_passe" name="mot_de_passe" type="password" autocomplete="new-password" required minlength="8"></div>
+          <div class="bw-champ"><label class="bw-libelle" for="confirmation">Confirmation</label><input class="bw-saisie" id="confirmation" name="confirmation" type="password" autocomplete="new-password" required minlength="8"></div>
+        </div>
+        <div><button class="bw-btn bw-btn--secondaire" type="submit">Changer le mot de passe</button></div>
+      </form>
+    </section>
+
+    <section class="pm-panneau">
+      <form method="post" action="/deconnexion"><button class="bw-btn bw-btn--secondaire" type="submit"><%- icone('log-out') %>Se déconnecter</button></form>
+    </section>
+
+    <section class="pm-panneau pm-panneau--danger" id="supprimer" aria-labelledby="t-suppr">
+      <h2 id="t-suppr"><%- icone('trash-2') %>Supprimer mon compte</h2>
+      <p class="bw-petit">Ton compte, tes séries, tes révisions et tes examens sont effacés aussitôt, sans retour possible.</p>
+      <form class="bw-rangee" method="post" action="/compte/supprimer" data-confirmer="Supprimer définitivement ton compte et tout ton historique ?">
+        <label class="bw-visuellement-cache" for="actuel-suppr">Mot de passe</label>
+        <input class="bw-saisie" style="max-width:280px" id="actuel-suppr" name="actuel" type="password" autocomplete="current-password" required placeholder="Ton mot de passe">
+        <button class="bw-btn bw-btn--danger" type="submit">Supprimer</button>
+      </form>
+    </section>
+  </div>
+</div>
+<%- include('partiels/bas') %>

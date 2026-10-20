@@ -1,0 +1,50 @@
+<%- include('../partiels/haut') %>
+<div class="pm-etroit">
+  <a class="bw-btn bw-btn--discret bw-btn--petit" href="/admin"><%- icone('arrow-left') %>Administration</a>
+  <div class="pm-tete" style="margin-top:12px">
+    <p class="bw-surtitre"><%= compte.status === 'ADMIN' ? 'Administration' : 'Utilisateur' %></p>
+    <h1><%= compte.name %></h1>
+    <p><%= compte.mail %><% if (compte.en_attente) { %> · adresse à confirmer<% } %></p>
+  </div>
+  <div class="bw-encart">
+    <dl class="bw-proprietes">
+      <div><dt>Inscription</dt><dd><%= compte.cree_le ? format.date(compte.cree_le) : 'avant 2026' %></dd></div>
+      <div><dt>Connexion</dt><dd><%= compte.last_login ? format.date(compte.last_login) : 'jamais' %></dd></div>
+      <div><dt>Courriels</dt><dd><%= [compte.notif_rappel ? 'rappel' : null, compte.notif_bilan ? 'bilan' : null].filter(Boolean).join(' et ') || 'aucun' %></dd></div>
+    </dl>
+    <% if (compte.id_user !== utilisateur.id) { %>
+    <div class="bw-rangee">
+      <% if (compte.en_attente) { %>
+      <form method="post" action="/admin/utilisateurs/<%= compte.id_user %>/confirmer"><button class="bw-btn bw-btn--secondaire bw-btn--petit" type="submit"><%- icone('user-check') %>Confirmer l’adresse</button></form>
+      <% } %>
+      <% if (courrielActif && !compte.en_attente) { %>
+      <form method="post" action="/admin/utilisateurs/<%= compte.id_user %>/relancer" data-confirmer="Envoyer une relance par courriel à <%= compte.name %> ?"><button class="bw-btn bw-btn--secondaire bw-btn--petit" type="submit"><%- icone('send') %>Relancer</button></form>
+      <% } %>
+      <form method="post" action="/admin/utilisateurs/<%= compte.id_user %>/role" data-confirmer="<%= compte.status === 'ADMIN' ? 'Retirer' : 'Donner' %> l’accès à l’administration ?"><button class="bw-btn bw-btn--secondaire bw-btn--petit" type="submit"><%- icone('shield') %><%= compte.status === 'ADMIN' ? 'Retirer l’administration' : 'Donner l’administration' %></button></form>
+      <form method="post" action="/admin/utilisateurs/<%= compte.id_user %>/supprimer" data-confirmer="Supprimer le compte de <%= compte.name %> et tout son historique ? C’est définitif."><button class="bw-btn bw-btn--danger bw-btn--petit" type="submit"><%- icone('user-x') %>Supprimer</button></form>
+    </div>
+    <% } %>
+  </div>
+
+  <section class="pm-section" style="margin-top:32px">
+    <h2>Dernières séries</h2>
+    <% if (!series.length) { %><p class="bw-petit">Aucune série.</p><% } else { %>
+    <ul class="pm-liste">
+      <% for (const s of series) { %>
+      <li><a class="pm-ligne" href="/historique/serie/<%= s.id_session %>"><span><b><%= s.mode === 'examen' ? 'Examen' : 'Entraînement' %> · <%= s.year ?? 'toutes les annales' %></b><small><%= format.date(s.date) %> · <%= s.size %> questions</small></span><span class="pm-taux pm-taux--<%= notation.niveau(s.reussite) %>"><%= s.reussite %> %</span></a></li>
+      <% } %>
+    </ul>
+    <% } %>
+  </section>
+  <section class="pm-section">
+    <h2>Révisions</h2>
+    <% if (!revisions.length) { %><p class="bw-petit">Aucune révision.</p><% } else { %>
+    <ul class="pm-liste">
+      <% for (const r of revisions) { %>
+      <li><a class="pm-ligne" href="/historique/revision/<%= r.id_revision %>"><span><b>Annales <%= r.year %></b><small><%= r.faites %> questions<%= r.active ? '' : ' · remise à zéro depuis' %></small></span><span class="pm-taux pm-taux--<%= notation.niveau(r.reussite) %>"><%= r.reussite %> %</span></a></li>
+      <% } %>
+    </ul>
+    <% } %>
+  </section>
+</div>
+<%- include('../partiels/bas') %>

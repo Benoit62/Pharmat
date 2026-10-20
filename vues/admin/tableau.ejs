@@ -1,0 +1,34 @@
+<%- include('../partiels/haut') %>
+<div class="pm-rangee-fin pm-tete">
+  <div><p class="bw-surtitre">Administration</p><h1>Tableau de bord</h1></div>
+  <div class="bw-rangee">
+    <a class="bw-btn bw-btn--secondaire" href="/admin/questions"><%- icone('list-checks') %>Questions</a>
+    <a class="bw-btn bw-btn--secondaire" href="/admin/import"><%- icone('upload') %>Import et export</a>
+  </div>
+</div>
+<dl class="bw-chiffres" style="margin-top:0">
+  <div class="bw-chiffre"><dt>Comptes</dt><dd><%= chiffres.comptes %></dd></div>
+  <div class="bw-chiffre"><dt>Connectés sur 7 jours</dt><dd><%= chiffres.actifs %></dd></div>
+  <div class="bw-chiffre"><dt>Séries sur 7 jours</dt><dd><%= chiffres.series %></dd></div>
+  <div class="bw-chiffre"><dt>Questions en service</dt><dd><%= format.nombre(chiffres.questions) %></dd></div>
+</dl>
+<section class="pm-section" style="margin-top:48px">
+  <h2>Comptes</h2>
+  <div class="bw-tableau-cadre">
+    <table class="bw-tableau">
+      <thead><tr><th>Prénom</th><th>Adresse</th><th>Rôle</th><th>Dernière connexion</th><th class="bw-nombre">Séries</th></tr></thead>
+      <tbody>
+        <% for (const c of comptes) { %>
+        <tr>
+          <td><a href="/admin/utilisateurs/<%= c.id_user %>"><%= c.name %></a></td>
+          <td><%= c.mail %><% if (c.en_attente) { %> <span class="bw-etiquette bw-etiquette--ocre">à confirmer</span><% } %></td>
+          <td><%= c.status === 'ADMIN' ? 'Administration' : 'Utilisateur' %></td>
+          <td><%= c.last_login ? format.date(c.last_login) : '—' %></td>
+          <td class="bw-nombre"><%= c.series %></td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</section>
+<%- include('../partiels/bas') %>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pharmat</title>
+<!-- Aperçu de Pharmat sur le portail : une question de QCM se coche, se valide, puis la
+     correction s'affiche et le score monte. Une seule horloge de 8 s, CSS seulement. -->
+<style>
+  :root { --fond: #f4f8f6; --surface: #fbfdfc; --texte: #13241d; --doux: #4b5f56; --trait: #d3e0d9; --creux: #e6efea;
+          --vert: #127a4a; --sur-vert: #fff; --vert-pale: #d9f1e3; --ocre: #9a6200; --ocre-pale: #f6e7cc;
+          color-scheme: light; --cycle: 8s; }
+  :root.sombre { --fond: #0e1613; --surface: #15201b; --texte: #e5efea; --doux: #a2b6ac; --trait: #25342d; --creux: #0a100d;
+                 --vert: #4cc98a; --sur-vert: #0e1613; --vert-pale: #163827; --ocre: #e3a948; --ocre-pale: #3a2a0e; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; gap: 6%; padding: 0 6%;
+         background: var(--fond); color: var(--texte); overflow: hidden;
+         font: 600 clamp(8px, 2.4vw, 11px)/1.35 system-ui, "Segoe UI", sans-serif; }
+  .marque { display: grid; gap: .6em; }
+  .marque svg { width: clamp(28px, 9vw, 40px); height: auto; }
+  h1 { margin: 0; font-size: clamp(17px, 5.6vw, 25px); line-height: 1.05; letter-spacing: -.03em; font-weight: 750; }
+  p { margin: 0; color: var(--doux); font-weight: 500; }
+
+  .carte { background: var(--surface); border: 1px solid var(--trait); border-radius: 10px; padding: 7% 7% 6%;
+           box-shadow: 0 6px 20px rgb(0 0 0 / .08); display: grid; gap: 5px; position: relative; }
+  .tete { display: flex; gap: 5px; align-items: center; }
+  .pastille { padding: 1px 7px; border-radius: 99px; background: var(--vert-pale); color: var(--vert); font-size: .85em; }
+  .enonce { height: .55em; border-radius: 9px; background: var(--trait); }
+  .enonce.court { width: 70%; margin-bottom: 3px; }
+  .o { display: flex; align-items: center; gap: 6px; height: 1.9em; padding: 0 6px; border-radius: 6px; border: 1px solid var(--trait); }
+  .o i { width: 1.35em; height: 1.35em; border-radius: 4px; background: var(--creux); display: grid; place-items: center; font-style: normal; font-size: .85em; flex: none; }
+  .o b { height: .45em; border-radius: 9px; background: var(--trait); flex: 1; }
+  .o em { font-style: normal; font-size: .8em; color: var(--vert); opacity: 0; }
+  .score { position: absolute; right: 7%; top: 7%; padding: 1px 8px; border-radius: 99px; background: var(--vert); color: var(--sur-vert); font-size: .9em; opacity: 0; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .o.coche, .o.coche i, .o.coche em, .o.oubli, .score, .carte { animation: var(--cycle) ease-in-out infinite both; }
+    .carte { animation-name: carte; }
+    .o.b { animation-name: cocheB; } .o.b i { animation-name: lettreB; }
+    .o.d { animation-name: cocheD; } .o.d i { animation-name: lettreD; }
+    .o.coche em { animation-name: verdict; }
+    .score { animation-name: score; }
+  }
+  /* Sans animation : l'état final (cochées, corrigées, score) reste affiché */
+  @media (prefers-reduced-motion: reduce) {
+    .o.coche { border-color: var(--vert); background: var(--vert-pale); } .o.coche i { background: var(--vert); color: var(--sur-vert); }
+    .o.coche em, .score { opacity: 1; }
+  }
+  @keyframes carte { 0%, 3% { opacity: 0; transform: translateY(6px); } 9%, 90% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; transform: none; } }
+  @keyframes cocheB { 0%, 18% { border-color: var(--trait); background: transparent; } 22%, 100% { border-color: var(--vert); background: var(--vert-pale); } }
+  @keyframes lettreB { 0%, 18% { background: var(--creux); color: var(--texte); } 22%, 100% { background: var(--vert); color: var(--sur-vert); } }
+  @keyframes cocheD { 0%, 32% { border-color: var(--trait); background: transparent; } 36%, 100% { border-color: var(--vert); background: var(--vert-pale); } }
+  @keyframes lettreD { 0%, 32% { background: var(--creux); color: var(--texte); } 36%, 100% { background: var(--vert); color: var(--sur-vert); } }
+  @keyframes verdict { 0%, 50% { opacity: 0; } 56%, 100% { opacity: 1; } }
+  @keyframes score { 0%, 60% { opacity: 0; transform: scale(.8); } 66%, 100% { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<div class="marque">
+  <svg viewBox="0 0 64 64" aria-hidden="true"><g transform="rotate(-45 32 32)"><rect x="17.5" y="4" width="29" height="56" rx="14.5" fill="var(--vert-pale)"/><path d="M17.5 32V18.5a14.5 14.5 0 0 1 29 0V32Z" fill="var(--vert)"/><rect x="17.5" y="4" width="29" height="56" rx="14.5" fill="none" stroke="var(--vert)" stroke-width="3.5"/><path transform="rotate(45 32 44.5)" d="M26 44.5l4.2 4.2 8-8.4" fill="none" stroke="var(--vert)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
+  <h1>Pharmat</h1>
+  <p>Les annales de l’internat de pharmacie, corrigées question par question.</p>
+</div>
+<div class="carte" aria-hidden="true">
+  <div class="tete"><span class="pastille">QCM</span></div>
+  <div class="enonce"></div>
+  <div class="enonce court"></div>
+  <div class="o"><i>A</i><b></b></div>
+  <div class="o coche b"><i>B</i><b style="flex:.8"></b><em>✓ juste</em></div>
+  <div class="o"><i>C</i><b style="flex:.6"></b></div>
+  <div class="o coche d"><i>D</i><b style="flex:.9"></b><em>✓ juste</em></div>
+  <div class="o"><i>E</i><b style="flex:.7"></b></div>
+  <span class="score">2 / 2</span>
+</div>
+<script>
+  // Suivre le thème du portail : #sombre ou #clair ; sans ancre, celui du système
+  function theme() {
+    var h = location.hash.slice(1);
+    var sombre = h ? h === 'sombre' : matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.classList.toggle('sombre', sombre);
+  }
+  addEventListener('hashchange', theme);
+  theme();
+</script>
+</body>
+</html>

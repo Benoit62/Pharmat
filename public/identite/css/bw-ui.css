@@ -1,0 +1,500 @@
+/* ==========================================================================
+   bw-ui.css — composants d'interface de Benoît Wattinne
+   Dépend de tokens.css (couleurs, espaces, arrondis, polices) et fonts.css.
+   Toutes les classes sont préfixées « bw- » pour éviter les collisions.
+   ========================================================================== */
+
+/* ---------- 1. Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; animation: none !important; } }
+body {
+  margin: 0;
+  background: var(--papier);
+  color: var(--encre);
+  font-family: var(--font-texte);
+  font-size: 16px;
+  line-height: 26px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img, svg, video { max-width: 100%; height: auto; }
+[hidden] { display: none !important; }
+::selection { background: var(--rouge-gorge-pale); color: var(--encre); }
+:focus-visible { outline: none; box-shadow: var(--anneau-focus); border-radius: var(--arrondi-s); }
+
+/* ---------- 2. Typographie ---------- */
+h1, h2, h3, h4, .bw-affiche, .bw-titre-1, .bw-titre-2, .bw-titre-3 {
+  font-family: var(--font-titre); font-weight: 600; color: var(--encre);
+  margin: 0; text-wrap: balance;
+}
+.bw-affiche { font-size: clamp(40px, 6vw, 56px); line-height: 1.07; font-weight: 650; letter-spacing: -0.02em; }
+h1, .bw-titre-1 { font-size: clamp(30px, 4.2vw, 36px); line-height: 1.17; letter-spacing: -0.015em; }
+h2, .bw-titre-2 { font-size: clamp(23px, 3vw, 26px); line-height: 1.23; letter-spacing: -0.01em; }
+h3, .bw-titre-3 { font-size: 20px; line-height: 28px; }
+h4 { font-family: var(--font-texte); font-size: 16px; line-height: 24px; font-weight: 650; }
+p { margin: 0; }
+.bw-chapo { font-size: 19px; line-height: 30px; color: var(--encre-douce); }
+.bw-petit { font-size: 14px; line-height: 22px; color: var(--encre-douce); }
+.bw-surtitre {
+  font-family: var(--font-texte); font-size: 12px; line-height: 16px; font-weight: 650;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--rouge-gorge); margin: 0;
+}
+.bw-surtitre--nature { color: var(--sapin); }
+a, .bw-lien { color: var(--lien); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover, .bw-lien:hover { text-decoration-thickness: 2px; }
+.bw-lien--discret { color: inherit; text-decoration-color: var(--trait-fort); }
+strong { font-weight: 650; }
+
+/* Texte long (articles) : rythme vertical automatique */
+.bw-prose { max-width: 68ch; display: flow-root; }
+.bw-prose > * + * { margin-top: var(--espace-4); }
+.bw-prose > h2 { margin-top: var(--espace-12); }
+.bw-prose > h3 { margin-top: var(--espace-8); }
+.bw-prose ul, .bw-prose ol { padding-left: 1.3em; margin-bottom: 0; }
+.bw-prose li + li { margin-top: var(--espace-1); }
+.bw-prose li::marker { color: var(--rouge-gorge); }
+.bw-prose hr, .bw-separateur { border: 0; border-top: 1px solid var(--trait); margin: var(--espace-8) 0; }
+
+code, kbd, .bw-code-inline {
+  font-family: var(--font-code); font-size: 0.875em;
+  background: var(--papier-creux); padding: 1px 6px; border-radius: var(--arrondi-s);
+}
+kbd { border: 1px solid var(--trait-fort); border-bottom-width: 2px; background: var(--papier-releve); }
+.bw-code {
+  font-family: var(--font-code); font-size: 14px; line-height: 22px;
+  background: var(--papier-releve); color: var(--encre); border: 1px solid var(--trait);
+  border-radius: var(--arrondi-m); padding: var(--espace-4) var(--espace-6);
+  overflow-x: auto; margin: 0; tab-size: 2;
+}
+.bw-code code { background: none; padding: 0; font-size: inherit; }
+.bw-code .c { color: var(--encre-douce); }      /* commentaire */
+.bw-code .k { color: var(--rouge-gorge); }      /* mot-clé, commande */
+.bw-code .s { color: var(--sapin); }            /* chaîne */
+.bw-code .n { color: var(--ardoise); }          /* nombre, option */
+
+.bw-citation {
+  margin: 0; padding: var(--espace-2) 0 var(--espace-2) var(--espace-6);
+  border-left: 2px solid var(--rouge-gorge);
+  font-family: var(--font-titre); font-size: 22px; line-height: 32px; font-weight: 500;
+}
+.bw-citation footer { margin-top: var(--espace-2); font-family: var(--font-texte); font-size: 14px; color: var(--encre-douce); font-weight: 400; }
+
+.bw-figure { margin: 0; display: grid; gap: var(--espace-2); }
+.bw-figure img, .bw-figure .bw-visuel { border-radius: var(--arrondi-m); display: block; width: 100%; }
+.bw-figure figcaption { font-size: 14px; line-height: 22px; color: var(--encre-douce); }
+
+/* ---------- 3. Mise en page ---------- */
+.bw-conteneur {
+  width: 100%; max-width: 1120px; margin-inline: auto;
+  padding-left: max(var(--espace-4), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--espace-4), env(safe-area-inset-right, 0px));
+}
+@media (min-width: 720px) { .bw-conteneur { padding-left: max(var(--espace-8), env(safe-area-inset-left, 0px)); padding-right: max(var(--espace-8), env(safe-area-inset-right, 0px)); } }
+.bw-section { padding-block: var(--espace-16); }
+.bw-section--creux { background: var(--papier-creux); }
+.bw-section__tete { display: grid; gap: var(--espace-2); margin-bottom: var(--espace-8); max-width: 68ch; }
+.bw-grille { display: grid; gap: var(--espace-6); grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
+.bw-pile { display: grid; gap: var(--espace-4); }
+.bw-rangee { display: flex; flex-wrap: wrap; gap: var(--espace-3); align-items: center; }
+.bw-lien-evitement { position: absolute; left: -9999px; top: var(--espace-2); background: var(--papier-releve); padding: var(--espace-2) var(--espace-4); z-index: 50; border-radius: var(--arrondi-s); }
+.bw-lien-evitement:focus { left: var(--espace-4); }
+
+/* ---------- 4. En-tête et navigation ---------- */
+.bw-entete {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: var(--papier); border-bottom: 1px solid var(--trait);
+}
+.bw-entete__barre { display: flex; align-items: center; gap: var(--espace-6); min-height: 64px; }
+.bw-marque { display: inline-flex; align-items: center; gap: var(--espace-3); text-decoration: none; color: var(--encre); }
+.bw-marque img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; display: block; }
+.bw-marque span { font-family: var(--font-titre); font-weight: 600; font-size: 18px; line-height: 1; }
+.bw-nav { margin-left: auto; }
+.bw-nav ul { list-style: none; display: flex; gap: var(--espace-1); margin: 0; padding: 0; }
+.bw-nav a {
+  display: block; padding: var(--espace-2) var(--espace-3); border-radius: var(--arrondi-plein);
+  color: var(--encre-douce); text-decoration: none; font-weight: 500; font-size: 15px; line-height: 20px;
+}
+.bw-nav a:hover { color: var(--encre); background: var(--papier-creux); }
+.bw-nav a[aria-current="page"] { color: var(--encre); background: var(--rouge-gorge-pale); }
+.bw-menu-mobile { display: none; margin-left: auto; position: relative; }
+.bw-menu-mobile summary { list-style: none; cursor: pointer; }
+.bw-menu-mobile summary::-webkit-details-marker { display: none; }
+.bw-menu-mobile ul {
+  position: absolute; right: 0; top: calc(100% + var(--espace-2)); min-width: 200px;
+  list-style: none; margin: 0; padding: var(--espace-2);
+  background: var(--papier-releve); border: 1px solid var(--trait); border-radius: var(--arrondi-m); box-shadow: var(--ombre-douce);
+}
+.bw-menu-mobile a { display: block; padding: var(--espace-2) var(--espace-3); border-radius: var(--arrondi-s); color: var(--encre); text-decoration: none; }
+.bw-menu-mobile a:hover { background: var(--papier-creux); }
+/* Le sélecteur de thème se range dans le menu sur mobile : <li class="bw-menu-mobile__theme"><div class="bw-theme">… */
+.bw-menu-mobile__theme { padding: var(--espace-2) var(--espace-3) var(--espace-1); border-top: 1px solid var(--trait); margin-top: var(--espace-2); }
+.bw-menu-mobile__theme .bw-theme { display: inline-flex; }
+@media (max-width: 760px) { .bw-entete .bw-nav, .bw-entete__barre > .bw-theme { display: none; } .bw-menu-mobile { display: block; } }
+
+/* Sélecteur de thème (Système / Clair / Sombre) */
+.bw-theme { display: inline-flex; padding: 3px; gap: 2px; border: 1px solid var(--trait); border-radius: var(--arrondi-plein); background: var(--papier-releve); }
+.bw-theme button {
+  border: 0; background: transparent; color: var(--encre-douce); cursor: pointer;
+  width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
+}
+.bw-theme button :is(svg, .bw-icone) { width: 16px; height: 16px; }
+.bw-theme button i { font-size: 15px; }
+.bw-theme button[aria-pressed="true"] { background: var(--papier-creux); color: var(--encre); }
+
+/* Fil d'Ariane */
+.bw-ariane ol { list-style: none; display: flex; flex-wrap: wrap; gap: var(--espace-2); margin: 0; padding: 0; font-size: 14px; line-height: 22px; color: var(--encre-douce); }
+.bw-ariane li + li::before { content: "/"; margin-right: var(--espace-2); color: var(--trait-fort); }
+.bw-ariane a { color: var(--encre-douce); }
+.bw-ariane [aria-current="page"] { color: var(--encre); }
+
+/* Pagination */
+.bw-pagination { display: flex; flex-wrap: wrap; gap: var(--espace-1); list-style: none; margin: 0; padding: 0; }
+.bw-pagination a, .bw-pagination span {
+  min-width: 40px; height: 40px; padding: 0 var(--espace-3); display: inline-grid; place-items: center;
+  border-radius: var(--arrondi-plein); text-decoration: none; color: var(--encre); font-weight: 500; font-variant-numeric: tabular-nums;
+}
+.bw-pagination a:hover { background: var(--papier-creux); }
+.bw-pagination [aria-current="page"] { background: var(--encre); color: var(--papier); }
+.bw-pagination .bw-pagination__ellipse { color: var(--encre-douce); }
+
+/* ---------- 5. Bandeau d'accueil (hero) ---------- */
+.bw-hero { position: relative; overflow: hidden; padding-block: var(--espace-16); border-bottom: 1px solid var(--trait); }
+@media (min-width: 900px) { .bw-hero { padding-block: 112px; } }
+.bw-hero__motif { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .26; pointer-events: none; }
+.bw-hero__motif--sombre { display: none; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bw-hero__motif--clair { display: none; } :root:not([data-theme="light"]) .bw-hero__motif--sombre { display: block; opacity: .36; } }
+:root[data-theme="dark"] .bw-hero__motif--clair { display: none; }
+:root[data-theme="dark"] .bw-hero__motif--sombre { display: block; opacity: .36; }
+.bw-hero__contenu { position: relative; display: grid; gap: var(--espace-6); max-width: 640px; }
+.bw-hero .bw-affiche em { font-style: normal; color: var(--rouge-gorge); }
+
+/* ---------- 6. Boutons ---------- */
+.bw-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--espace-2);
+  font-family: var(--font-texte); font-weight: 600; font-size: 15px; line-height: 20px;
+  padding: var(--espace-3) 22px; border-radius: var(--arrondi-plein);
+  border: 1.5px solid transparent; cursor: pointer; text-decoration: none; white-space: nowrap;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+.bw-btn :is(svg, .bw-icone) { width: 16px; height: 16px; flex: none; }
+.bw-btn i, .bw-erreur i { flex: none; width: 1.1em; text-align: center; }
+.bw-btn--principal { background: var(--rouge-gorge); color: var(--sur-rouge-gorge); }
+.bw-btn--principal:hover { background: color-mix(in srgb, var(--rouge-gorge) 88%, var(--encre)); }
+.bw-btn--secondaire { background: transparent; color: var(--encre); border-color: var(--trait-fort); }
+.bw-btn--secondaire:hover { background: var(--papier-creux); }
+.bw-btn--sapin { background: var(--sapin); color: var(--sur-sapin); }
+.bw-btn--sapin:hover { background: color-mix(in srgb, var(--sapin) 88%, var(--encre)); }
+.bw-btn--discret { background: transparent; color: var(--lien); text-decoration: underline; text-underline-offset: 3px; padding-inline: var(--espace-2); }
+.bw-btn--petit { font-size: 14px; padding: 6px 14px; }
+.bw-btn--grand { font-size: 16px; padding: 14px 28px; }
+.bw-btn--icone { padding: 0; width: 44px; height: 44px; }
+.bw-btn--icone :is(svg, .bw-icone) { width: 18px; height: 18px; }
+.bw-btn--icone i { font-size: 18px; }
+.bw-btn:disabled, .bw-btn[aria-disabled="true"] { opacity: .45; cursor: not-allowed; }
+
+/* ---------- 7. Formulaires ---------- */
+.bw-champ { display: grid; gap: 6px; }
+.bw-libelle { font-weight: 600; font-size: 14px; line-height: 20px; color: var(--encre); }
+.bw-libelle .bw-optionnel { font-weight: 400; color: var(--encre-douce); }
+.bw-saisie, .bw-zone, .bw-liste {
+  width: 100%; font: inherit; font-size: 16px; line-height: 24px; color: var(--encre);
+  background: var(--papier-releve); border: 1.5px solid var(--trait-fort); border-radius: var(--arrondi-s);
+  padding: 10px 12px; transition: border-color .15s ease;
+}
+.bw-zone { min-height: 128px; resize: vertical; }
+.bw-liste { appearance: none; padding-right: 40px; cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--encre-douce) 50%), linear-gradient(135deg, var(--encre-douce) 50%, transparent 50%);
+  background-position: calc(100% - 20px) 50%, calc(100% - 15px) 50%; background-size: 5px 5px; background-repeat: no-repeat; }
+.bw-saisie::placeholder, .bw-zone::placeholder { color: var(--encre-douce); opacity: .8; }
+.bw-saisie:hover, .bw-zone:hover, .bw-liste:hover { border-color: var(--encre-douce); }
+.bw-saisie:focus-visible, .bw-zone:focus-visible, .bw-liste:focus-visible { border-color: var(--rouge-gorge); }
+.bw-aide { font-size: 14px; line-height: 20px; color: var(--encre-douce); }
+.bw-champ--erreur .bw-saisie, .bw-champ--erreur .bw-zone { border-color: var(--brique); }
+.bw-erreur { display: flex; gap: 6px; align-items: center; font-size: 14px; line-height: 20px; color: var(--brique); font-weight: 500; }
+.bw-erreur :is(svg, .bw-icone) { width: 16px; height: 16px; flex: none; }
+.bw-choix { display: flex; gap: var(--espace-3); align-items: flex-start; cursor: pointer; font-size: 15px; line-height: 22px; }
+.bw-choix input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--rouge-gorge); flex: none; cursor: pointer; }
+.bw-choix .bw-interrupteur { width: 40px; height: 24px; margin: -1px 0 0; }
+.bw-groupe { border: 0; margin: 0; padding: 0; display: grid; gap: var(--espace-2); }
+.bw-groupe legend { padding: 0; margin-bottom: var(--espace-2); }
+/* Interrupteur : <input type="checkbox" role="switch" class="bw-interrupteur"> */
+.bw-interrupteur {
+  appearance: none; width: 40px; height: 24px; border-radius: var(--arrondi-plein); flex: none; margin: 0;
+  background: var(--trait-fort); position: relative; cursor: pointer; transition: background-color .15s ease;
+}
+.bw-interrupteur::after {
+  content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--papier-releve); transition: transform .15s ease;
+}
+.bw-interrupteur:checked { background: var(--sapin); }
+.bw-interrupteur:checked::after { transform: translateX(16px); }
+.bw-formulaire { display: grid; gap: var(--espace-6); }
+.bw-formulaire__ligne { display: grid; gap: var(--espace-6); align-items: start; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+
+/* ---------- 8. Étiquettes, pastilles, auteur ---------- */
+.bw-etiquette {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 13px; line-height: 18px; font-weight: 500;
+  padding: 3px 10px; border-radius: var(--arrondi-plein); background: var(--papier-creux); color: var(--encre); text-decoration: none;
+}
+.bw-etiquette--nature { background: var(--sapin-pale); }
+.bw-etiquette--tech { background: var(--rouge-gorge-pale); }
+a.bw-etiquette:hover { box-shadow: inset 0 0 0 1px var(--trait-fort); }
+.bw-etiquettes { display: flex; flex-wrap: wrap; gap: var(--espace-2); list-style: none; margin: 0; padding: 0; }
+.bw-auteur { display: flex; align-items: center; gap: var(--espace-3); }
+.bw-auteur img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+.bw-auteur b { display: block; font-weight: 600; line-height: 20px; }
+.bw-auteur span { font-size: 14px; line-height: 20px; color: var(--encre-douce); }
+
+/* ---------- 9. Cartes ---------- */
+.bw-carte {
+  position: relative; display: flex; flex-direction: column; gap: var(--espace-3);
+  background: var(--papier-releve); border: 1px solid var(--trait); border-radius: var(--arrondi-m);
+  padding: var(--espace-6); transition: box-shadow .15s ease, border-color .15s ease;
+}
+.bw-carte:hover { box-shadow: var(--ombre-douce); border-color: var(--trait-fort); }
+.bw-carte__visuel { margin: calc(-1 * var(--espace-6)) calc(-1 * var(--espace-6)) var(--espace-2); border-radius: var(--arrondi-m) var(--arrondi-m) 0 0; overflow: hidden; aspect-ratio: 16 / 9; background: var(--papier-creux); }
+/* Seuls les médias remplissent le visuel : une pastille ou un badge peut s'y superposer librement. */
+.bw-carte__visuel { position: relative; }
+.bw-carte__visuel > :is(img, svg, video, picture) { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bw-carte__visuel > .bw-pastille { position: absolute; top: var(--espace-3); left: var(--espace-3); }
+.bw-carte__titre a { color: inherit; text-decoration: none; }
+.bw-carte__titre a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; } /* toute la carte est cliquable */
+.bw-carte__titre a:focus-visible { box-shadow: none; }
+.bw-carte:has(.bw-carte__titre a:focus-visible) { box-shadow: var(--anneau-focus); }
+.bw-carte__meta { font-size: 14px; line-height: 22px; color: var(--encre-douce); }
+.bw-carte .bw-etiquettes { margin-top: auto; padding-top: var(--espace-2); position: relative; }
+
+/* ---------- 10. Messages ---------- */
+.bw-message {
+  --teinte: var(--ardoise);
+  display: grid; grid-template-columns: 20px 1fr; gap: var(--espace-3); align-items: start;
+  padding: var(--espace-4); border-radius: var(--arrondi-m);
+  background: color-mix(in srgb, var(--teinte) 11%, var(--papier-releve));
+  border: 1px solid color-mix(in srgb, var(--teinte) 30%, transparent);
+}
+.bw-message :is(svg, .bw-icone) { width: 20px; height: 20px; color: var(--teinte); margin-top: 3px; }
+.bw-message > i { font-size: 18px; color: var(--teinte); margin-top: 5px; width: 1.1em; text-align: center; }
+.bw-message strong { display: block; }
+.bw-message p { font-size: 15px; line-height: 24px; }
+.bw-message--succes { --teinte: var(--sapin); }
+.bw-message--attention { --teinte: var(--ocre); }
+.bw-message--erreur { --teinte: var(--brique); }
+
+/* ---------- 11. Tableau ---------- */
+.bw-tableau-cadre { overflow-x: auto; border: 1px solid var(--trait); border-radius: var(--arrondi-m); background: var(--papier-releve); }
+.bw-tableau { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 22px; }
+.bw-tableau caption { text-align: left; padding: var(--espace-3) var(--espace-4); font-size: 14px; color: var(--encre-douce); caption-side: bottom; border-top: 1px solid var(--trait); }
+.bw-tableau th, .bw-tableau td { padding: 10px var(--espace-4); text-align: left; border-bottom: 1px solid var(--trait); }
+.bw-tableau thead th { background: var(--papier-creux); font-weight: 650; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--encre-douce); }
+.bw-tableau tbody tr:last-child td { border-bottom: 0; }
+.bw-tableau tbody tr:hover td { background: color-mix(in srgb, var(--papier-creux) 45%, transparent); }
+.bw-tableau .bw-nombre { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ---------- 12. Onglets et accordéon ---------- */
+.bw-onglets__liste { display: flex; gap: var(--espace-1); border-bottom: 1px solid var(--trait); overflow-x: auto; }
+.bw-onglets__onglet {
+  font: inherit; font-weight: 600; font-size: 15px; color: var(--encre-douce); background: none; border: 0; cursor: pointer;
+  padding: var(--espace-3) var(--espace-4); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap;
+}
+.bw-onglets__onglet:hover { color: var(--encre); }
+.bw-onglets__onglet[aria-selected="true"] { color: var(--encre); border-bottom-color: var(--rouge-gorge); }
+.bw-onglets__panneau { padding-top: var(--espace-6); }
+.bw-accordeon { border-top: 1px solid var(--trait); }
+.bw-accordeon details { border-bottom: 1px solid var(--trait); }
+.bw-accordeon summary {
+  list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: var(--espace-4);
+  padding: var(--espace-4) 0; font-family: var(--font-titre); font-weight: 600; font-size: 18px; line-height: 26px;
+}
+.bw-accordeon summary::-webkit-details-marker { display: none; }
+.bw-accordeon summary::after { content: "+"; font-family: var(--font-texte); font-weight: 400; font-size: 24px; color: var(--rouge-gorge); transition: transform .15s ease; }
+.bw-accordeon details[open] summary::after { transform: rotate(45deg); }
+.bw-accordeon details > div { padding-bottom: var(--espace-6); color: var(--encre-douce); max-width: 68ch; }
+
+/* ---------- 13. Parcours (frise) ---------- */
+.bw-parcours { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.bw-parcours > li { display: grid; grid-template-columns: 96px 20px 1fr; gap: var(--espace-3); }
+.bw-parcours__date { font-family: var(--font-code); font-size: 13px; line-height: 26px; color: var(--encre-douce); text-align: right; font-variant-numeric: tabular-nums; }
+.bw-parcours__trace { position: relative; display: flex; justify-content: center; }
+.bw-parcours__trace::before { content: ""; position: absolute; top: 0; bottom: 0; width: 2px; background: var(--trait); }
+.bw-parcours > li:first-child .bw-parcours__trace::before { top: 9px; }
+.bw-parcours > li:last-child .bw-parcours__trace::before { bottom: auto; height: 9px; }
+.bw-parcours__trace::after { content: ""; position: relative; width: 12px; height: 12px; margin-top: 7px; border-radius: 50%; background: var(--papier); border: 2px solid var(--rouge-gorge); }
+.bw-parcours > li.bw-parcours--nature .bw-parcours__trace::after { border-color: var(--sapin); }
+.bw-parcours__corps { padding-bottom: var(--espace-8); }
+.bw-parcours__corps h3 { font-size: 18px; line-height: 26px; }
+.bw-parcours__corps p { color: var(--encre-douce); font-size: 15px; line-height: 24px; margin-top: var(--espace-1); }
+.bw-parcours__corps ul:not(.bw-etiquettes) { margin: var(--espace-2) 0 0; padding-left: 1.2em; color: var(--encre-douce); font-size: 15px; line-height: 24px; }
+.bw-parcours__corps li::marker { color: var(--rouge-gorge); }
+.bw-parcours__corps .bw-etiquettes { margin-top: var(--espace-3); }
+@media (max-width: 520px) { .bw-parcours > li { grid-template-columns: 20px 1fr; } .bw-parcours__date { grid-column: 2; text-align: left; order: -1; } .bw-parcours__trace { grid-row: 1 / span 2; } }
+
+/* ---------- 14. Appel à l'action et pied de page ---------- */
+.bw-appel {
+  display: grid; gap: var(--espace-6); align-items: center; grid-template-columns: 1fr;
+  background: var(--sapin); color: var(--sur-sapin); border-radius: var(--arrondi-l); padding: var(--espace-8);
+}
+@media (min-width: 720px) { .bw-appel { grid-template-columns: 1fr auto; padding: var(--espace-12); } }
+.bw-appel h2 { color: var(--sur-sapin); }
+.bw-appel p { opacity: .85; margin-top: var(--espace-2); }
+.bw-appel .bw-btn--principal { background: var(--papier-releve); color: var(--encre); }
+.bw-appel .bw-btn--principal:hover { background: var(--papier); }
+.bw-pied { border-top: 1px solid var(--trait); padding-block: var(--espace-12) var(--espace-8); background: var(--papier); }
+.bw-pied__haut { display: grid; gap: var(--espace-8); grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); }
+.bw-pied h2 { font-family: var(--font-texte); font-size: 13px; line-height: 18px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; color: var(--encre-douce); margin-bottom: var(--espace-3); }
+.bw-pied ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--espace-2); }
+.bw-pied a { color: var(--encre); text-decoration: none; }
+.bw-pied a:hover { color: var(--lien); text-decoration: underline; }
+.bw-pied__bas { margin-top: var(--espace-12); padding-top: var(--espace-6); border-top: 1px solid var(--trait); display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--espace-4); font-size: 14px; color: var(--encre-douce); }
+.bw-icones-sociales { display: flex; gap: var(--espace-2); }
+.bw-icones-sociales a { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--trait); color: var(--encre-douce); }
+.bw-icones-sociales a:hover { color: var(--encre); border-color: var(--trait-fort); text-decoration: none; }
+.bw-icones-sociales :is(svg, .bw-icone) { width: 18px; height: 18px; }
+.bw-icones-sociales i { font-size: 17px; }
+
+/* ---------- 15. Utilitaires ---------- */
+.bw-visuellement-cache { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.bw-texte-doux { color: var(--encre-douce); }
+.bw-appel .bw-btn--secondaire { color: var(--sur-sapin); border-color: currentColor; }
+.bw-appel .bw-btn--secondaire:hover { background: color-mix(in srgb, var(--sur-sapin) 12%, transparent); }
+
+/* ==========================================================================
+   Composants issus du portfolio (classes pf- d'origine entre parenthèses).
+   Mêmes mesures et mêmes couleurs que là-bas : un site qui passe des pf- aux bw-
+   ne change pas d'apparence.
+   ========================================================================== */
+
+/* ---------- 16. Pictogrammes : <svg class="bw-icone"><use href="…/icones/icones.svg#nom"/></svg> ---------- */
+.bw-icone { width: 20px; height: 20px; flex: none; vertical-align: -0.25em; }
+.bw-icone--s { width: 16px; height: 16px; }
+.bw-icone--l { width: 24px; height: 24px; }
+.bw-icone--xl { width: 32px; height: 32px; }
+.bw-icone--douce { color: var(--encre-douce); }
+.bw-icone--rouge-gorge { color: var(--rouge-gorge); }
+.bw-icone--sapin { color: var(--sapin); }
+@keyframes bw-tourne { to { transform: rotate(360deg); } }
+.bw-icone--tourne { animation: bw-tourne 1s linear infinite; }
+
+/* ---------- 17. Médaillon d'icône (pf-competence__icone, pf-dehors__icone) ---------- */
+.bw-medaillon { width: 40px; height: 40px; padding: 9px; border-radius: 50%; flex: none; background: var(--rouge-gorge-pale); color: var(--rouge-gorge); box-sizing: border-box; }
+.bw-medaillon--sapin { background: var(--sapin-pale); color: var(--sapin); }
+.bw-medaillon--grand { width: 48px; height: 48px; padding: 11px; }
+
+/* ---------- 18. Pastille d'état (pf-pastille) ---------- */
+.bw-pastille {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; font-weight: 600;
+  padding: 4px 10px 4px 8px; border-radius: var(--arrondi-plein); background: var(--papier-releve); color: var(--encre);
+  border: 1px solid var(--trait); white-space: nowrap;
+}
+.bw-pastille__point { width: 8px; height: 8px; border-radius: 50%; background: var(--trait-fort); flex: none; }
+.bw-pastille--en-ligne .bw-pastille__point, .bw-pastille--ok .bw-pastille__point { background: var(--sapin); box-shadow: 0 0 0 3px var(--sapin-pale); }
+.bw-pastille--en-cours .bw-pastille__point, .bw-pastille--perturbe .bw-pastille__point { background: var(--ocre); }
+.bw-pastille--panne .bw-pastille__point { background: var(--brique); }
+.bw-pastille--ok .bw-pastille__point { animation: bw-battement 2.4s ease-in-out infinite; }
+@keyframes bw-battement { 50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--sapin) 18%, transparent); } }
+
+/* ---------- 19. Filtres en pastilles (pf-filtres, pf-filtre) ---------- */
+.bw-filtres { display: flex; flex-wrap: wrap; gap: var(--espace-2); margin-bottom: var(--espace-8); }
+.bw-filtre {
+  font: inherit; font-size: 15px; font-weight: 500; line-height: 20px; cursor: pointer;
+  padding: 8px 14px; border-radius: var(--arrondi-plein); border: 1px solid var(--trait-fort);
+  background: transparent; color: var(--encre); display: inline-flex; gap: 6px; align-items: center;
+}
+.bw-filtre:hover { background: var(--papier-releve); }
+.bw-filtre[aria-pressed="true"] { background: var(--encre); border-color: var(--encre); color: var(--papier); }
+.bw-filtre__n { font-family: var(--font-code); font-size: 12px; opacity: .7; }
+.bw-filtres__vide { color: var(--encre-douce); }
+
+/* ---------- 20. Tuiles de chiffres (pf-chiffres, pf-chiffre) : <dl><div><dt>libellé</dt><dd>42</dd></div></dl> ---------- */
+.bw-chiffres { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr)); gap: var(--espace-3); }
+.bw-chiffre { background: var(--papier-releve); border: 1px solid var(--trait); border-radius: var(--arrondi-m); padding: var(--espace-4); display: flex; flex-direction: column-reverse; gap: 2px; }
+.bw-chiffre dd { margin: 0; font-family: var(--font-titre); font-weight: 650; font-size: 40px; line-height: 44px; color: var(--encre); font-variant-numeric: tabular-nums; }
+.bw-chiffre:first-child dd { color: var(--rouge-gorge); }
+.bw-chiffre:nth-child(2) dd { color: var(--sapin); }
+.bw-chiffre dt { font-size: 14px; line-height: 20px; color: var(--encre-douce); }
+
+/* ---------- 21. Sélecteur de langue (pf-langue) ---------- */
+.bw-langue {
+  font-family: var(--font-code); font-size: 13px; font-weight: 600; letter-spacing: .04em;
+  color: var(--encre-douce); text-decoration: none; padding: 6px 10px; border-radius: var(--arrondi-plein);
+  border: 1px solid var(--trait);
+}
+.bw-langue:hover { color: var(--encre); background: var(--papier-creux); }
+.bw-entete__barre:has(.bw-langue) { gap: var(--espace-4); }
+@media (max-width: 760px) {
+  .bw-entete__barre .bw-langue { margin-left: auto; }
+  .bw-entete__barre:has(.bw-langue) .bw-menu-mobile { margin-left: 0; }
+}
+
+/* ---------- 22. Liste de propriétés (pf-fiche-projet__lignes ; --fiche : pf-fiche__lignes) ---------- */
+.bw-proprietes { margin: 0; display: grid; }
+.bw-proprietes > div { display: grid; grid-template-columns: 76px 1fr; gap: var(--espace-3); padding: 8px 0; border-bottom: 1px solid var(--trait); align-items: center; }
+.bw-proprietes dt { font-size: 13px; color: var(--encre-douce); }
+.bw-proprietes dd { margin: 0; font-size: 15px; line-height: 22px; font-weight: 500; }
+.bw-proprietes--fiche { border-top: 1px dashed var(--trait-fort); }
+.bw-proprietes--fiche > div { grid-template-columns: 86px 1fr; padding: 9px 0; border-bottom: 1px dashed var(--trait); align-items: start; }
+.bw-proprietes--fiche dt { font-family: var(--font-code); font-size: 12px; line-height: 22px; text-transform: uppercase; letter-spacing: .06em; color: var(--sapin); }
+.bw-proprietes--fiche dd { font-weight: 400; }
+.bw-encart { display: grid; gap: var(--espace-4); padding: var(--espace-6); background: var(--papier-releve); border: 1px solid var(--trait); border-radius: var(--arrondi-m); align-content: start; }
+.bw-encart__titre { font-family: var(--font-texte); font-size: 12px; line-height: 16px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; color: var(--encre-douce); margin: var(--espace-2) 0 0; }
+
+/* ---------- 23. Cartes : mise en avant et grille (pf-projets, pf-carte--une) ---------- */
+.bw-cartes { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--espace-6); grid-template-columns: 1fr; }
+@media (min-width: 700px) { .bw-cartes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1040px) {
+  .bw-cartes { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .bw-cartes > .bw-carte { grid-column: span 2; }
+  .bw-cartes > .bw-carte--une { grid-column: span 3; }
+  .bw-cartes--filtre > .bw-carte--une { grid-column: span 2; }
+}
+.bw-carte--une .bw-carte__titre { font-size: 24px; line-height: 30px; }
+.bw-carte__accroche { color: var(--encre-douce); font-size: 15px; line-height: 24px; }
+
+/* ---------- 24. Mini-carte horizontale (pf-mini) ---------- */
+.bw-minis { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--espace-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+.bw-mini { display: grid; grid-template-columns: 112px 1fr; gap: var(--espace-4); align-items: center; padding: var(--espace-3); padding-right: var(--espace-4); border-radius: var(--arrondi-m); background: var(--papier-releve); border: 1px solid var(--trait); text-decoration: none; color: var(--encre); }
+.bw-mini:hover { border-color: var(--trait-fort); box-shadow: var(--ombre-douce); }
+.bw-mini__visuel { display: block; aspect-ratio: 16 / 9; border-radius: var(--arrondi-s); overflow: hidden; background: var(--papier-creux); }
+.bw-mini__visuel > :is(img, svg) { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bw-mini b { display: block; font-family: var(--font-titre); font-weight: 600; font-size: 17px; }
+.bw-mini b + span { display: block; font-size: 14px; line-height: 20px; color: var(--encre-douce); }
+
+/* ---------- 25. Documents à télécharger (pf-documents) ---------- */
+.bw-documents { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--espace-2); }
+.bw-documents a { display: flex; gap: var(--espace-3); align-items: flex-start; padding: var(--espace-3); border-radius: var(--arrondi-s); background: var(--papier); text-decoration: none; color: var(--encre); border: 1px solid var(--trait); }
+.bw-documents a:hover { border-color: var(--trait-fort); }
+.bw-documents .bw-icone { color: var(--rouge-gorge); margin-top: 2px; width: 18px; height: 18px; }
+.bw-documents b { display: block; font-weight: 600; font-size: 15px; line-height: 20px; }
+.bw-documents b + span { font-size: 13px; color: var(--encre-douce); }
+
+/* ---------- 26. Précédent / suivant (pf-projet__suite, pf-voisin) ---------- */
+.bw-suite { margin-top: var(--espace-16); padding-top: var(--espace-6); border-top: 1px solid var(--trait); display: grid; grid-template-columns: 1fr auto 1fr; gap: var(--espace-4); align-items: center; }
+.bw-voisin { display: inline-flex; align-items: center; gap: var(--espace-3); text-decoration: none; color: var(--encre); }
+.bw-voisin > span > * { display: block; }
+.bw-voisin b { font-family: var(--font-titre); font-weight: 600; font-size: 17px; }
+.bw-voisin:hover b { color: var(--lien); }
+.bw-voisin--suivant { justify-self: end; text-align: right; }
+@media (max-width: 640px) {
+  .bw-suite { grid-template-columns: 1fr 1fr; }
+  .bw-suite > .bw-btn { grid-column: 1 / -1; grid-row: 2; justify-self: center; }
+}
+
+/* ---------- 27. Carte topographique générée (pf-topo) : voir outils/topo.py ---------- */
+.bw-topo { position: relative; background: var(--papier); color: var(--ardoise); overflow: hidden; }
+.bw-topo--rouge-gorge { color: var(--rouge-gorge); }
+.bw-topo--sapin { color: var(--sapin); }
+.bw-topo--ardoise { color: var(--ardoise); }
+.bw-topo--ocre { color: var(--ocre); }
+.bw-topo--ecorce { color: var(--ecorce); }
+.bw-topo__sommet { fill: var(--rouge-gorge); }
+.bw-topo--rouge-gorge .bw-topo__sommet { fill: var(--encre); }
+.bw-topo__carte { display: block; width: 100%; height: 100%; transition: transform .8s cubic-bezier(.2, .7, .2, 1); }
+.bw-carte:hover .bw-topo__carte { transform: scale(1.06) rotate(-.6deg); }
+.bw-mini:hover .bw-topo__carte { transform: scale(1.1); }
+
+/* ---------- 28. Page introuvable (pf-introuvable) ---------- */
+.bw-introuvable { position: relative; padding-block: var(--espace-16); min-height: 70vh; display: grid; align-items: center; }
+.bw-introuvable__carte { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--trait-fort); opacity: .6; pointer-events: none; }
+.bw-introuvable__texte { position: relative; max-width: 560px; display: grid; gap: var(--espace-4); background: var(--papier); padding: var(--espace-8); border-radius: var(--arrondi-l); border: 1px solid var(--trait); }
+.bw-introuvable__boussole { width: 44px; height: 44px; color: var(--rouge-gorge); animation: bw-cherche 4s ease-in-out infinite; }
+@keyframes bw-cherche { 0%, 100% { transform: rotate(-25deg); } 50% { transform: rotate(35deg); } }

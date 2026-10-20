@@ -1,0 +1,35 @@
+<%- include('../partiels/haut') %>
+<% const bonnes = notation.lettres(q.correct); %>
+<div class="pm-etroit">
+  <a class="bw-btn bw-btn--discret bw-btn--petit" href="/admin/questions?annee=<%= q.year %>"><%- icone('arrow-left') %>Questions <%= q.year %></a>
+  <div class="pm-tete" style="margin-top:12px"><h1><%= titre %></h1></div>
+  <form class="bw-formulaire" method="post" action="/admin/questions/<%= q.id_qcm ?? 'nouvelle' %>">
+    <div class="bw-formulaire__ligne">
+      <div class="bw-champ"><label class="bw-libelle" for="annee">Année</label><input class="bw-saisie" id="annee" name="annee" type="number" min="1980" max="2100" required value="<%= q.year %>"></div>
+      <div class="bw-champ"><label class="bw-libelle" for="numero">Numéro</label><input class="bw-saisie" id="numero" name="numero" type="number" min="1" required value="<%= q.number %>"></div>
+      <div class="bw-champ"><label class="bw-libelle" for="type">Type</label>
+        <select class="bw-liste" id="type" name="type"><option value="QCM"<% if (q.type === 'QCM') { %> selected<% } %>>QCM · une ou plusieurs</option><option value="QCS"<% if (q.type === 'QCS') { %> selected<% } %>>QCS · une seule</option></select></div>
+    </div>
+    <div class="bw-champ"><label class="bw-libelle" for="question">Énoncé</label><textarea class="bw-zone" id="question" name="question" required><%= q.question %></textarea></div>
+    <fieldset class="bw-groupe">
+      <legend>Propositions <span class="bw-optionnel bw-petit">— cocher les bonnes réponses</span></legend>
+      <% for (const l of notation.LETTRES) { %>
+      <div class="bw-champ">
+        <label class="bw-choix"><input type="checkbox" name="correctes" value="<%= l %>"<% if (bonnes.includes(l)) { %> checked<% } %>><span><strong><%= l %></strong> bonne réponse</span></label>
+        <label class="bw-visuellement-cache" for="prop<%= l %>">Proposition <%= l %></label>
+        <textarea class="bw-zone" style="min-height:64px" id="prop<%= l %>" name="<%= l %>" required><%= q[l] %></textarea>
+      </div>
+      <% } %>
+    </fieldset>
+    <label class="bw-choix"><input type="checkbox" class="bw-interrupteur" role="switch" name="annulee" value="oui"<% if (q.annulee) { %> checked<% } %>><span><strong>Question annulée au concours</strong> — gardée, mais exclue des séries.</span></label>
+    <fieldset class="bw-groupe">
+      <legend>Matières</legend>
+      <div class="pm-cases--colonnes">
+        <% for (const m of matieres) { %><label class="bw-choix"><input type="checkbox" name="matieres" value="<%= m.id %>"<% if (choisies.includes(m.id)) { %> checked<% } %>><span><%= m.nom %></span></label><% } %>
+      </div>
+      <div class="bw-champ"><label class="bw-libelle" for="nouvelle_matiere">Nouvelle matière <span class="bw-optionnel">(facultatif)</span></label><input class="bw-saisie" id="nouvelle_matiere" name="nouvelle_matiere" maxlength="40"></div>
+    </fieldset>
+    <div class="bw-rangee"><button class="bw-btn bw-btn--principal" type="submit"><%- icone('check') %>Enregistrer</button><a class="bw-btn bw-btn--secondaire" href="/admin/questions?annee=<%= q.year %>">Annuler</a></div>
+  </form>
+</div>
+<%- include('../partiels/bas') %>

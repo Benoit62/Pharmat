@@ -1,0 +1,27 @@
+<%- include('../partiels/haut') %>
+<div class="pm-etroit">
+  <a class="bw-btn bw-btn--discret bw-btn--petit" href="/admin/questions"><%- icone('arrow-left') %>Questions</a>
+  <div class="pm-tete" style="margin-top:12px"><p class="bw-surtitre">Administration</p><h1>Importer et exporter</h1></div>
+
+  <section class="pm-panneau">
+    <h2><%- icone('upload') %>Importer des questions</h2>
+    <p class="bw-petit">Fichiers <code>.seqa</code> de Pharmat 1 ou <code>.json</code> exportés ici. Une question de même année, même numéro et même énoncé est mise à jour ; les autres sont ajoutées. Les matières inconnues sont créées. Tout ou rien : une erreur de serveur n’importe rien.</p>
+    <label class="pm-depot" id="depot">
+      <%- icone('file-json', 'bw-icone--xl bw-icone--douce') %>
+      <span><strong>Choisir des fichiers</strong> ou les déposer ici</span>
+      <input type="file" id="fichiers" accept=".seqa,.json,application/json" multiple>
+    </label>
+    <div id="rapport" class="pm-rapport" aria-live="polite"></div>
+  </section>
+
+  <section class="pm-panneau" style="margin-top:24px">
+    <h2><%- icone('download') %>Exporter</h2>
+    <p class="bw-petit">Au même format que l’import : de quoi garder une copie des annales ou les corriger hors ligne.</p>
+    <form class="bw-rangee" method="get" action="/admin/questions-export">
+      <label class="bw-visuellement-cache" for="annee-export">Année</label>
+      <select class="bw-liste" style="width:auto" id="annee-export" name="annee"><option value="">Toutes les annales</option><% for (const a of annees) { %><option value="<%= a.annee %>"><%= a.annee %> · <%= a.n %></option><% } %></select>
+      <button class="bw-btn bw-btn--secondaire" type="submit"><%- icone('download') %>Télécharger</button>
+    </form>
+  </section>
+</div>
+<%- include('../partiels/bas') %>

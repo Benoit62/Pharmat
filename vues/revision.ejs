@@ -1,0 +1,40 @@
+<%- include('partiels/haut') %>
+<div class="pm-tete">
+  <p class="bw-surtitre">Révision</p>
+  <h1>Les annales, année par année</h1>
+  <p>Avance dans une année à ton rythme : chaque étape ne repose que les questions qui restent. La correction de l’étape s’affiche à la fin.</p>
+</div>
+<ul class="pm-annees">
+  <% for (const a of progression) { const finie = a.faites >= a.total; %>
+  <li class="pm-annee<%= finie ? ' pm-annee--finie' : '' %>">
+    <div class="pm-annee__tete">
+      <b><%= a.annee %></b>
+      <span><%= a.faites %> / <%= a.total %><% if (a.reussite != null) { %> · <span class="pm-taux pm-taux--<%= notation.niveau(a.reussite) %>"><%= a.reussite %> %</span><% } %></span>
+    </div>
+    <div class="pm-progression pm-progression--lagon" role="img" aria-label="<%= Math.round(a.faites / a.total * 100) %> % fait"><span style="--p: <%= a.faites / a.total * 100 %>%"></span></div>
+    <% if (!finie) { %>
+    <form method="post" action="/revision">
+      <input type="hidden" name="annee" value="<%= a.annee %>">
+      <label class="bw-visuellement-cache" for="n<%= a.annee %>">Questions par étape</label>
+      <select class="bw-liste" id="n<%= a.annee %>" name="nombre">
+        <% for (const n of nombres) { %><option value="<%= n %>"<% if (n === 20) { %> selected<% } %>><%= n %> questions</option><% } %>
+        <option value="120">Tout le reste</option>
+      </select>
+      <button class="bw-btn bw-btn--sapin bw-btn--petit" type="submit"><%- icone('play') %><%= a.faites ? 'Continuer' : 'Commencer' %></button>
+    </form>
+    <% } else { %>
+      <p class="bw-petit"><%- icone('circle-check', 'bw-icone--s') %> Année terminée.</p>
+    <% } %>
+    <% if (a.faites) { %>
+    <div class="bw-rangee">
+      <a class="bw-btn bw-btn--discret bw-btn--petit" href="/historique/revision/<%= a.id_revision %>">Voir la correction</a>
+      <form method="post" action="/revision/recommencer" class="pm-en-ligne" data-confirmer="Remettre la révision <%= a.annee %> à zéro ? L’ancienne progression restera dans l’historique.">
+        <input type="hidden" name="annee" value="<%= a.annee %>">
+        <button class="bw-btn bw-btn--discret bw-btn--petit" type="submit"><%- icone('rotate-ccw') %>Recommencer</button>
+      </form>
+    </div>
+    <% } %>
+  </li>
+  <% } %>
+</ul>
+<%- include('partiels/bas') %>

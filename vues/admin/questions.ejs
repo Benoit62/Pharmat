@@ -1,0 +1,46 @@
+<%- include('../partiels/haut') %>
+<div class="pm-rangee-fin pm-tete">
+  <div><p class="bw-surtitre">Administration</p><h1>Questions</h1></div>
+  <div class="bw-rangee">
+    <a class="bw-btn bw-btn--principal" href="/admin/questions/nouvelle<%= annee ? `?annee=${annee}` : '' %>"><%- icone('plus') %>Ajouter</a>
+    <a class="bw-btn bw-btn--secondaire" href="/admin/import"><%- icone('upload') %>Import et export</a>
+  </div>
+</div>
+<form class="bw-formulaire__ligne" method="get" action="/admin/questions" style="margin-bottom:24px;align-items:end">
+  <div class="bw-champ"><label class="bw-libelle" for="annee">Année</label>
+    <select class="bw-liste" id="annee" name="annee"><option value="">Toutes</option>
+      <% for (const a of annees) { %><option value="<%= a.annee %>"<% if (a.annee === annee) { %> selected<% } %>><%= a.annee %> · <%= a.n %></option><% } %>
+    </select></div>
+  <div class="bw-champ"><label class="bw-libelle" for="q">Rechercher dans le texte</label>
+    <input class="bw-saisie" id="q" name="q" type="search" value="<%= recherche %>" placeholder="ibuprofène, Quick…"></div>
+  <div><button class="bw-btn bw-btn--secondaire" type="submit"><%- icone('search') %>Filtrer</button></div>
+</form>
+<p class="bw-petit" style="margin-bottom:12px"><%= format.nombre(total) %> question<%= total > 1 ? 's' : '' %></p>
+<div class="bw-tableau-cadre">
+  <table class="bw-tableau">
+    <thead><tr><th>Année · n°</th><th>Question</th><th>Réponse</th><th class="pm-actions">Actions</th></tr></thead>
+    <tbody>
+      <% for (const q of questions) { %>
+      <tr id="q<%= q.id_qcm %>">
+        <td><%= q.year %> · <%= q.number %><br><span class="bw-petit"><%= q.type %></span></td>
+        <td class="pm-question-admin"><p><%= q.question %></p><% if (q.matieres) { %><span class="bw-petit"><%= q.matieres %></span><% } %></td>
+        <td><% if (q.annulee) { %><span class="bw-etiquette bw-etiquette--ocre">annulée</span><% } else { %><b><%= q.correct %></b><% } %></td>
+        <td class="pm-actions">
+          <a class="bw-btn bw-btn--secondaire bw-btn--petit" href="/admin/questions/<%= q.id_qcm %>"><%- icone('pencil') %>Modifier</a>
+          <form method="post" action="/admin/questions/<%= q.id_qcm %>/supprimer" class="pm-en-ligne" data-confirmer="Supprimer la question <%= q.number %> de <%= q.year %> ? Les réponses déjà données à cette question disparaissent de l’historique.">
+            <button class="bw-btn bw-btn--danger bw-btn--petit bw-btn--icone" type="submit" aria-label="Supprimer"><%- icone('trash-2') %></button>
+          </form>
+        </td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+<% if (pages > 1) { const base = `/admin/questions?annee=${annee ?? ''}&q=${encodeURIComponent(recherche)}`; %>
+<nav aria-label="Pages"><ul class="bw-pagination">
+  <% if (page > 1) { %><li><a href="<%= base %>&page=<%= page - 1 %>" aria-label="Page précédente"><%- icone('chevron-left') %></a></li><% } %>
+  <li><span aria-current="page"><%= page %> / <%= pages %></span></li>
+  <% if (page < pages) { %><li><a href="<%= base %>&page=<%= page + 1 %>" aria-label="Page suivante"><%- icone('chevron-right') %></a></li><% } %>
+</ul></nav>
+<% } %>
+<%- include('../partiels/bas') %>

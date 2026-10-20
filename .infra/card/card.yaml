@@ -1,0 +1,16 @@
+# La carte de Pharmat sur le portail des applications (template/MANIFESTE.md du dépôt Infra).
+title: Pharmat
+tagline: Les QCM de l'internat de pharmacie, en séries, en révision ou en examen blanc
+description: >
+  Plus de 2 300 questions des annales du concours (1991 à 2022), corrigées selon le barème
+  officiel. Entraînement par année ou par matière, révision année par année, examen blanc
+  chronométré et statistiques pour savoir quoi retravailler.
+icon: fa-solid fa-capsules
+tags: [études, santé]
+access: restricted
+preview: preview.html
+shortcuts:
+  - { label: Entraînement, icon: fa-solid fa-shuffle, href: /entrainement }
+  - { label: Révision, icon: fa-solid fa-book-open, href: /revision }
+  - { label: Examen blanc, icon: fa-solid fa-stopwatch, href: /examen }
+  - { label: Code source, icon: fa-brands fa-github, href: "https://github.com/Benoit62/Pharmat" }

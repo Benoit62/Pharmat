@@ -1,0 +1,9 @@
+.git
+.github
+.infra
+node_modules
+.env
+.env.*
+test
+outils/*.py
+*.md

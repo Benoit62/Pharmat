@@ -1,0 +1,73 @@
+# Publier l'image du projet — à copier tel quel dans le projet : .github/workflows/deploy.yml
+#
+# À chaque push sur main : construit l'image, y joint .infra/deploy.yaml (le manifeste),
+# et la publie sur GHCR sous les étiquettes :main et :<commit>. Le serveur suit :main et
+# déploie seul dans les deux minutes (DEC-010). Aucun secret à créer : le GITHUB_TOKEN que
+# GitHub donne à chaque exécution suffit, et il ne donne AUCUN accès au serveur.
+#
+# Rien à modifier ici. Ce qui change d'un projet à l'autre est dans .infra/deploy.yaml
+# et dans le Dockerfile.
+
+name: Publier l'image
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:            # relancer à la main : onglet Actions → Publier l'image → Run
+
+permissions:
+  contents: read
+  packages: write               # publier sur GHCR, rien d'autre
+
+concurrency:
+  group: publier-image
+  cancel-in-progress: true      # deux push rapprochés : seul le dernier est publié
+
+jobs:
+  publier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Vérifier le manifeste
+        run: |
+          test -f .infra/deploy.yaml || { echo "::error::.infra/deploy.yaml absent — copier template/.infra/deploy.yaml du dépôt Infra"; exit 1; }
+          test -f Dockerfile || { echo "::error::Dockerfile absent à la racine — partir de template/dockerfiles/ du dépôt Infra"; exit 1; }
+          grep -q '^apiVersion: infra/v1' .infra/deploy.yaml || { echo "::error::.infra/deploy.yaml : la ligne « apiVersion: infra/v1 » manque"; exit 1; }
+          # La validation complète se fait sur le serveur : un manifeste refusé n'y casse rien,
+          # la version en service continue (voir .\outils\vps.ps1 projets).
+
+      - name: Préparer la carte du portail
+        run: |
+          # .infra/card/ (facultatif) : la carte du projet sur le portail (DEC-017). Archive
+          # reproductible : triée, sans propriétaire ni date.
+          if [ -d .infra/card ]; then
+            B64=$(tar --sort=name --owner=0 --group=0 --numeric-owner --mtime='2000-01-01 00:00Z' \
+                    -C .infra/card -cf - . | gzip -n -9 | base64 -w0)
+            if [ "${#B64}" -gt 100000 ]; then
+              echo "::warning::.infra/card/ fait $(( ${#B64} / 1000 )) Ko une fois archivé : 100 Ko au plus. Image publiée SANS carte (carte par défaut sur le portail)."
+            else
+              echo "$B64" > "$RUNNER_TEMP/carte.b64"
+            fi
+          fi
+
+      - name: Construire
+        run: |
+          IMAGE="ghcr.io/${GITHUB_REPOSITORY,,}"
+          echo "IMAGE=$IMAGE" >> "$GITHUB_ENV"
+          CARTE=()
+          [ -f "$RUNNER_TEMP/carte.b64" ] && CARTE=(--label "infra.card.b64=$(cat "$RUNNER_TEMP/carte.b64")")
+          docker build \
+            --label "infra.manifest.b64=$(base64 -w0 .infra/deploy.yaml)" \
+            "${CARTE[@]}" \
+            --label "org.opencontainers.image.source=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" \
+            --label "org.opencontainers.image.revision=$GITHUB_SHA" \
+            -t "$IMAGE:main" -t "$IMAGE:$GITHUB_SHA" .
+
+      - name: Publier sur GHCR
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker push "$IMAGE:$GITHUB_SHA"
+          docker push "$IMAGE:main"         # en dernier : c'est elle que le serveur suit
+          echo "### Publiée : \`$IMAGE:main\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "Le serveur la déploie dans les deux minutes. Suivi : \`.\outils\vps.ps1 projets\`" >> "$GITHUB_STEP_SUMMARY"

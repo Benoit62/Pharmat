@@ -1,0 +1,17 @@
+  </div>
+</main>
+<footer class="pm-pied">
+  <div class="bw-conteneur">
+    <span>Pharmat · les annales du concours de l’internat de pharmacie</span>
+    <span>Fait par <a href="https://benoitwattinne.fr">Benoît Wattinne</a> · <a href="https://github.com/Benoit62/Pharmat">code source</a></span>
+  </div>
+</footer>
+<% if (utilisateur) { %>
+<nav class="pm-onglets" aria-label="Navigation">
+  <% for (const [href, libelle, ic] of [['/accueil', 'Accueil', 'house'], ['/historique', 'Historique', 'history'], ['/statistiques', 'Stats', 'chart-column'], ['/compte', 'Compte', 'user']].concat(utilisateur.admin ? [['/admin', 'Admin', 'shield']] : [])) { %>
+  <a href="<%= href %>"<% if (chemin === href || chemin.startsWith(href + '/')) { %> aria-current="page"<% } %>><%- icone(ic) %><span><%= libelle %></span></a>
+  <% } %>
+</nav>
+<% } %>
+</body>
+</html>

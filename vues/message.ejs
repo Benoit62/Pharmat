@@ -1,0 +1,8 @@
+<%- include('partiels/haut') %>
+<div class="pm-message-page">
+  <span class="bw-medaillon bw-medaillon--grand"><%- icone(typeof symbole !== 'undefined' ? symbole : 'info') %></span>
+  <h1><%= titre %></h1>
+  <p><%= texte %></p>
+  <% if (typeof lien !== 'undefined' && lien) { %><a class="bw-btn bw-btn--principal" href="<%= lien.href %>"><%= lien.texte %></a><% } %>
+</div>
+<%- include('partiels/bas') %>

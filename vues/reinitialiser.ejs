@@ -1,0 +1,20 @@
+<%- include('partiels/haut') %>
+<div class="pm-tres-etroit">
+  <div class="pm-tete"><h1>Nouveau mot de passe</h1></div>
+  <% if (typeof erreur !== 'undefined') { %>
+    <div class="bw-message bw-message--erreur pm-flash" role="alert"><%- icone('circle-x') %><p><%= erreur %></p></div>
+  <% } %>
+  <form class="bw-formulaire" method="post" action="/reinitialiser/<%= encodeURIComponent(jeton) %>">
+    <div class="bw-champ">
+      <label class="bw-libelle" for="mot_de_passe">Nouveau mot de passe</label>
+      <input class="bw-saisie" id="mot_de_passe" name="mot_de_passe" type="password" autocomplete="new-password" required minlength="8" autofocus>
+      <span class="bw-aide">8 caractères au moins.</span>
+    </div>
+    <div class="bw-champ">
+      <label class="bw-libelle" for="confirmation">Confirmation</label>
+      <input class="bw-saisie" id="confirmation" name="confirmation" type="password" autocomplete="new-password" required minlength="8">
+    </div>
+    <button class="bw-btn bw-btn--principal bw-btn--plein" type="submit">Enregistrer</button>
+  </form>
+</div>
+<%- include('partiels/bas') %>

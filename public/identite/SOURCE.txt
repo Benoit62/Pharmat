@@ -1,0 +1,6 @@
+Extraits du kit web de Benoit62/Identity — copiés par outils/importer-kits.py.
+Commit : 3741c6d6787e0a42ca1f3ba5c0c34b1bfccf6345 2026-10-20 Kit web : retours du portfolio
+Ne pas éditer ici : corriger dans Identity, puis réimporter. Les ajustements propres
+à Pharmat sont dans public/css/pharmat.css.
+Police Figtree : SIL Open Font License 1.1.
+Pictogrammes : Lucide 1.52.0 (ISC), 56 retenus, sha512 d336588a10337b86…

@@ -1,0 +1,12 @@
+<%- include('partiels/haut') %>
+<div class="pm-tres-etroit">
+  <div class="pm-tete"><h1>Mot de passe oublié</h1><p>Indique ton adresse : nous t’enverrons un lien pour en choisir un nouveau.</p></div>
+  <form class="bw-formulaire" method="post" action="/mot-de-passe-oublie">
+    <div class="bw-champ">
+      <label class="bw-libelle" for="mail">Adresse électronique</label>
+      <input class="bw-saisie" id="mail" name="mail" type="email" autocomplete="email" required autofocus>
+    </div>
+    <button class="bw-btn bw-btn--principal bw-btn--plein" type="submit"><%- icone('send') %>Envoyer le lien</button>
+  </form>
+</div>
+<%- include('partiels/bas') %>

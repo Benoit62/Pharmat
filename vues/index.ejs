@@ -1,0 +1,29 @@
+<%- include('partiels/haut') %>
+<section class="pm-hero">
+  <div class="pm-hero__texte">
+    <p class="bw-surtitre">Internat de pharmacie</p>
+    <h1 class="bw-affiche">Les annales du concours, <em>question par question</em>.</h1>
+    <p class="bw-chapo"><%= format.nombre(chiffres.questions) %> questions de <%= chiffres.annales %> annales (<%= chiffres.debut %>–<%= chiffres.fin %>), à travailler en séries rapides, année par année ou en examen blanc chronométré. Chaque réponse est corrigée selon le barème du concours.</p>
+    <div class="bw-rangee">
+      <a class="bw-btn bw-btn--principal bw-btn--grand" href="/inscription">Créer un compte</a>
+      <a class="bw-btn bw-btn--secondaire bw-btn--grand" href="/connexion">J’ai déjà un compte</a>
+    </div>
+  </div>
+  <div class="pm-hero__visuel" aria-hidden="true">
+    <div class="pm-maquette">
+      <span class="bw-etiquette bw-etiquette--lagon">QCM · Pharmacologie</span>
+      <p class="pm-maquette__q">Parmi les propositions suivantes concernant l’ibuprofène, lesquelles sont exactes ?</p>
+      <div class="pm-maquette__o"><b>A</b>Inhibiteur irréversible des cyclo-oxygénases</div>
+      <div class="pm-maquette__o est-juste"><b>B</b>Anti-inflammatoire, analgésique et antipyrétique</div>
+      <div class="pm-maquette__o est-juste"><b>C</b>Inhibe l’agrégation plaquettaire</div>
+      <div class="pm-maquette__o"><b>D</b>Ne provoque pas de troubles gastriques</div>
+    </div>
+  </div>
+</section>
+<section class="pm-atouts" aria-label="Ce que propose Pharmat">
+  <div class="pm-atout"><span class="bw-medaillon bw-medaillon--grand"><%- icone('dumbbell') %></span><h2 class="bw-titre-3">Entraînement</h2><p>Des séries tirées au hasard : une année, toutes les annales ou une seule matière.</p></div>
+  <div class="pm-atout"><span class="bw-medaillon bw-medaillon--grand bw-medaillon--lagon"><%- icone('book-open') %></span><h2 class="bw-titre-3">Révision</h2><p>Une année entière, par étapes : Pharmat retient où tu en es et ne repose que les questions restantes.</p></div>
+  <div class="pm-atout"><span class="bw-medaillon bw-medaillon--grand bw-medaillon--ocre"><%- icone('graduation-cap') %></span><h2 class="bw-titre-3">Examen blanc</h2><p>Une annale complète, chronométrée, rendue automatiquement à la fin du temps.</p></div>
+  <div class="pm-atout"><span class="bw-medaillon bw-medaillon--grand"><%- icone('chart-column') %></span><h2 class="bw-titre-3">Statistiques</h2><p>Ta réussite par matière, ton activité, tes jours d’affilée : tu vois où porter tes efforts.</p></div>
+</section>
+<%- include('partiels/bas') %>

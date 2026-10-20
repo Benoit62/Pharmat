@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fr" data-theme-defaut="clair">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title><%= titre ? `${titre} · Pharmat` : 'Pharmat · révision des QCM de l’internat de pharmacie' %></title>
+  <meta name="description" content="<%= typeof description !== 'undefined' ? description : 'Pharmat : les annales des QCM de l’internat de pharmacie, en entraînement, en révision année par année ou en examen blanc, avec une correction détaillée.' %>">
+  <meta name="theme-color" content="#f4f8f6" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0e1613" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="preload" href="/identite/fonts/Figtree-VF.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/identite/css/bw-ui.css">
+  <link rel="stylesheet" href="/css/pharmat.css">
+  <script src="/identite/js/bw-theme.js"></script>
+  <script src="/identite/js/bw-ui.js" defer></script>
+  <script src="/js/pharmat.js" defer></script>
+</head>
+<body>
+<a class="bw-lien-evitement" href="#contenu">Aller au contenu</a>
+<header class="bw-entete">
+  <div class="bw-conteneur bw-entete__barre">
+    <a class="bw-marque" href="<%= utilisateur ? '/accueil' : '/' %>" aria-label="Pharmat, accueil"><%- include('logo') %><span>Pharmat</span></a>
+    <% if (utilisateur) { %>
+    <nav class="bw-nav" aria-label="Navigation principale">
+      <ul>
+        <% for (const [href, libelle, ic] of [['/accueil', 'Accueil', 'house'], ['/historique', 'Historique', 'history'], ['/statistiques', 'Statistiques', 'chart-column'], ['/compte', 'Compte', 'user']].concat(utilisateur.admin ? [['/admin', 'Administration', 'shield']] : [])) { %>
+        <li><a href="<%= href %>"<% if (chemin === href || chemin.startsWith(href + '/')) { %> aria-current="page"<% } %>><%- icone(ic) %><%= libelle %></a></li>
+        <% } %>
+      </ul>
+    </nav>
+    <% } %>
+    <div class="pm-entete__actions"<% if (!utilisateur) { %> style="margin-left:auto"<% } %>>
+      <div class="bw-theme" role="group" aria-label="Thème">
+        <button type="button" data-theme-choix="clair" aria-label="Thème clair" aria-pressed="false"><%- icone('sun') %></button>
+        <button type="button" data-theme-choix="sombre" aria-label="Thème sombre" aria-pressed="false"><%- icone('moon') %></button>
+        <button type="button" data-theme-choix="systeme" aria-label="Thème du système" aria-pressed="false"><%- icone('monitor') %></button>
+      </div>
+      <% if (!utilisateur) { %>
+        <a class="bw-btn bw-btn--secondaire bw-btn--petit" href="/connexion">Connexion</a>
+      <% } %>
+    </div>
+  </div>
+</header>
+<main id="contenu">
+  <div class="bw-conteneur">
+  <% if (flash) { %>
+    <div class="bw-message bw-message--<%= flash.type %> pm-flash" role="<%= flash.type === 'erreur' ? 'alert' : 'status' %>">
+      <%- icone(flash.type === 'succes' ? 'circle-check' : flash.type === 'erreur' ? 'circle-x' : flash.type === 'attention' ? 'triangle-alert' : 'info') %>
+      <p><%= flash.texte %></p>
+    </div>
+  <% } %>

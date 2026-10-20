@@ -1,0 +1,74 @@
+<%- include('partiels/haut') %>
+<% const n = p.ids.length; const restantes = n - nbRepondues; %>
+<div class="pm-partie pm-etroit">
+  <div class="pm-partie__barre">
+    <div class="pm-partie__infos">
+      <span><b><%= libelleMode %></b> · <%= p.libelle %></span>
+      <span>Question <b><%= index + 1 %></b> sur <%= n %> · <%= nbRepondues %> répondue<%= nbRepondues > 1 ? 's' : '' %></span>
+      <% if (restantMs != null) { %>
+        <span class="pm-chrono" data-fin="<%= Date.now() + restantMs %>" role="timer" aria-label="Temps restant"><%- icone('timer', 'bw-icone--s') %><span><%= format.duree(Math.max(0, Math.round(restantMs / 1000))) %></span></span>
+      <% } %>
+    </div>
+    <div class="pm-progression" role="progressbar" aria-label="Questions répondues" aria-valuemin="0" aria-valuemax="<%= n %>" aria-valuenow="<%= nbRepondues %>"><span style="--p: <%= nbRepondues / n * 100 %>%"></span></div>
+    <% if (n > 1) { %>
+    <details class="pm-navigateur-details"<% if (n <= 40) { %> open<% } %>>
+      <summary>Aller à une question</summary>
+      <nav class="pm-navigateur" aria-label="Questions de la partie">
+        <% for (let i = 0; i < n; i++) { %>
+        <a href="/partie?q=<%= i %>" class="<%= i in p.reponses ? 'est-repondue' : '' %>"<% if (i === index) { %> aria-current="step"<% } %> aria-label="Question <%= i + 1 %><%= i in p.reponses ? ', répondue' : '' %>"><%= i + 1 %></a>
+        <% } %>
+      </nav>
+    </details>
+    <% } %>
+  </div>
+
+  <% if (complete) { %>
+  <div class="bw-message bw-message--succes" role="status"><%- icone('circle-check') %><p><strong>Toutes les questions ont une réponse.</strong> Tu peux encore en modifier, ou terminer pour voir la correction.</p></div>
+  <% } %>
+
+  <form class="pm-question" method="post" action="/partie/reponse" id="formulaire-question">
+    <input type="hidden" name="q" value="<%= index %>">
+    <div class="pm-question__tete">
+      <span class="bw-etiquette <%= q.type === 'QCS' ? 'bw-etiquette--lagon' : 'bw-etiquette--juste' %>"><%= q.type === 'QCS' ? 'QCS · une seule réponse' : 'QCM · une ou plusieurs réponses' %></span>
+      <span class="bw-etiquette"><%= q.year %> · n° <%= q.number %></span>
+      <% if (q.matieres) { %><span class="bw-etiquette"><%= q.matieres %></span><% } %>
+    </div>
+    <p class="pm-question__enonce" id="enonce"><%= q.question %></p>
+    <fieldset class="pm-options" aria-labelledby="enonce">
+      <% for (const l of notation.LETTRES) { %>
+      <label class="pm-option<%= q.type === 'QCM' ? ' pm-option--qcm' : '' %>">
+        <input type="<%= q.type === 'QCS' ? 'radio' : 'checkbox' %>" name="reponse" value="<%= l %>"<% if (choisies.includes(l)) { %> checked<% } %> data-lettre="<%= l %>">
+        <span class="pm-option__lettre" aria-hidden="true"><%= l %></span>
+        <span class="pm-option__texte"><%= q[l] %></span>
+      </label>
+      <% } %>
+    </fieldset>
+    <div class="pm-partie__actions pm-partie__actions--collantes">
+      <div>
+        <% if (index > 0) { %><a class="bw-btn bw-btn--secondaire" href="/partie?q=<%= index - 1 %>" aria-label="Question précédente"><%- icone('arrow-left') %><span class="pm-masque-mobile">Précédente</span></a><% } %>
+        <% if (suivante != null && suivante !== index) { %><a class="bw-btn bw-btn--discret" href="/partie?q=<%= suivante %>">Passer</a><% } %>
+      </div>
+      <div>
+        <% if (complete || (restantes === 1 && !(index in p.reponses))) { %>
+          <button class="bw-btn bw-btn--secondaire" type="submit" name="action" value="suivante">Valider</button>
+          <button class="bw-btn bw-btn--principal" type="submit" name="action" value="terminer"><%- icone('flag') %>Valider et terminer</button>
+        <% } else { %>
+          <button class="bw-btn bw-btn--principal" type="submit" name="action" value="suivante">Valider<%- icone('arrow-right') %></button>
+        <% } %>
+      </div>
+    </div>
+    <p class="pm-raccourcis">Clavier : touches A à E pour cocher, Entrée pour valider.</p>
+  </form>
+
+  <div class="pm-pied-partie">
+    <form method="post" action="/partie/abandonner" data-confirmer="Abandonner la partie ? Rien ne sera enregistré.">
+      <button class="bw-btn bw-btn--danger bw-btn--petit" type="submit"><%- icone('x') %>Abandonner</button>
+    </form>
+    <% if (!complete) { %>
+    <form method="post" action="/partie/terminer" data-confirmer="<%= p.mode === 'examen' ? `Rendre la copie ? ${restantes} question(s) sans réponse compteront 0.` : p.mode === 'revision' ? `Terminer l’étape ? Les ${restantes} question(s) sans réponse resteront à faire.` : `Terminer la série ? Les ${restantes} question(s) sans réponse ne seront pas comptées.` %>">
+      <button class="bw-btn bw-btn--secondaire bw-btn--petit" type="submit"><%- icone('flag') %><%= p.mode === 'examen' ? 'Rendre la copie' : 'Terminer maintenant' %></button>
+    </form>
+    <% } %>
+  </div>
+</div>
+<%- include('partiels/bas') %>

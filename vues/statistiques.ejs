@@ -1,0 +1,56 @@
+<%- include('partiels/haut') %>
+<div class="pm-tete"><h1>Statistiques</h1><p>Entraînements, révisions et examens confondus.</p></div>
+
+<dl class="bw-chiffres">
+  <div class="bw-chiffre"><dt>Questions répondues</dt><dd><%= format.nombre(chiffres.questions) %></dd></div>
+  <div class="bw-chiffre"><dt>Réussite moyenne</dt><dd><%= chiffres.reussite ?? '—' %><% if (chiffres.reussite != null) { %><small>%</small><% } %></dd></div>
+  <div class="bw-chiffre"><dt>Jours d’affilée</dt><dd><%= chiffres.serie %></dd></div>
+  <div class="bw-chiffre"><dt>Jours actifs sur 30</dt><dd><%= chiffres.joursActifs %></dd></div>
+</dl>
+
+<% if (!chiffres.questions) { %>
+  <div class="pm-vide" style="margin-top:32px"><p>Les graphiques apparaîtront après ta première série.</p><a class="bw-btn bw-btn--principal" href="/accueil">Commencer</a></div>
+<% } else { %>
+<div class="pm-graphes" style="margin-top:32px">
+  <section class="pm-graphe">
+    <h2>Activité</h2>
+    <p>Questions répondues, ces 14 derniers jours.</p>
+    <% const maxJ = Math.max(1, ...jours.map((j) => j.questions)); %>
+    <ul class="pm-barres" aria-label="Questions par jour">
+      <% for (const j of jours) { %>
+      <li title="<%= format.court(j.jour) %> : <%= j.questions %> question(s)"><small><%= j.questions || '' %></small><span class="<%= j.questions ? '' : 'est-vide' %>" style="--h: <%= j.questions / maxJ * 100 %>"></span><span class="bw-visuellement-cache"><%= format.court(j.jour) %> : <%= j.questions %> questions</span></li>
+      <% } %>
+    </ul>
+    <div class="pm-barres__axe" aria-hidden="true"><% for (const j of jours) { %><span><%= j.libelle %></span><% } %></div>
+  </section>
+
+  <section class="pm-graphe">
+    <h2>Dernières séries</h2>
+    <p>Réussite des <%= series.length %> dernières séries et examens, de la plus ancienne à la plus récente.</p>
+    <% if (series.length) { %>
+    <ul class="pm-barres" aria-label="Réussite par série">
+      <% for (const s of series) { const niv = notation.niveau(s.reussite); %>
+      <li title="<%= format.court(s.date) %> · <%= s.size %> questions : <%= s.reussite %> %"><span class="<%= niv === 'bon' ? '' : 'est-' + niv %>" style="--h: <%= Math.max(s.reussite, 2) %>"></span><span class="bw-visuellement-cache"><%= format.court(s.date) %> : <%= s.reussite %> %</span></li>
+      <% } %>
+    </ul>
+    <% } else { %><p class="bw-petit">Seules les révisions comptent pour l’instant : lance une série d’entraînement pour suivre ta réussite ici.</p><% } %>
+  </section>
+</div>
+
+<section class="pm-graphe" style="margin-top:24px">
+  <h2>Par matière</h2>
+  <p>Des points à travailler aux points forts (matières vues au moins 5 fois).<% if (types.QCS && types.QCM) { %> QCS : <%= types.QCS.reussite %> % de réussite · QCM : <%= types.QCM.reussite %> %.<% } %></p>
+  <% if (matieres.length) { %>
+  <ul class="pm-jauges">
+    <% for (const m of matieres) { const niv = notation.niveau(m.reussite); %>
+    <li class="pm-jauge">
+      <span><%= m.nom %> <small>· <%= m.n %></small></span>
+      <div class="pm-progression <%= niv === 'bon' ? '' : 'est-' + niv %>" aria-hidden="true"><span style="--p: <%= m.reussite %>%"></span></div>
+      <b class="pm-taux pm-taux--<%= niv %>"><%= m.reussite %> %</b>
+    </li>
+    <% } %>
+  </ul>
+  <% } else { %><p class="bw-petit">Pas encore assez de réponses dans des questions classées par matière.</p><% } %>
+</section>
+<% } %>
+<%- include('partiels/bas') %>

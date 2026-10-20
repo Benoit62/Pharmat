@@ -1,0 +1,24 @@
+# .infra/deploy.yaml — ce que Pharmat DEMANDE à la plateforme (template/MANIFESTE.md du dépôt Infra).
+# Le serveur décide de ce qu'il accorde dans state/projects/pharmat.yaml.
+
+apiVersion: infra/v1
+name: pharmat
+
+runtime:
+  port: 3000
+  healthPath: /sante              # répond « ok » quand l'application ET la base répondent
+  readOnly: true                  # rien n'est écrit sur le disque : sessions et parties sont en base
+  env:
+    NODE_ENV: production
+    URL_PUBLIQUE: https://pharmat.benoitwattinne.fr
+    MAIL_FROM: pharmat@benoitwattinne.fr   # utilisé dès que le relais de courriel sera en service
+  secrets: [SESSION_SECRET]       # valeur aléatoire déposée par l'administrateur
+  migrate: [node, outils/migrer.js]   # migrations SQL de migrations/, avant chaque bascule
+
+network:
+  exposure: public
+
+addons:
+  database: mariadb
+  events: true
+  # mail: true                    # relais smtp-relay (DEC-004) : à activer quand il existera

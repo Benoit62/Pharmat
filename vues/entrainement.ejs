@@ -1,0 +1,37 @@
+<%- include('partiels/haut') %>
+<div class="pm-etroit">
+  <div class="pm-tete">
+    <p class="bw-surtitre">Entraînement</p>
+    <h1>Composer une série</h1>
+    <p>Des questions tirées au hasard. La correction arrive à la fin de la série.</p>
+  </div>
+  <form class="bw-formulaire" method="post" action="/entrainement">
+    <fieldset class="bw-groupe">
+      <legend>Nombre de questions</legend>
+      <div class="pm-choix-grille">
+        <% for (const n of nombres) { %>
+        <label class="pm-pastille-choix"><input type="radio" name="nombre" value="<%= n %>"<% if (n === 20) { %> checked<% } %>><span><%= n %></span></label>
+        <% } %>
+      </div>
+    </fieldset>
+    <div class="bw-formulaire__ligne">
+      <div class="bw-champ">
+        <label class="bw-libelle" for="annee">Année</label>
+        <select class="bw-liste" id="annee" name="annee">
+          <option value="">Toutes les annales</option>
+          <% for (const a of annees) { %><option value="<%= a.annee %>"<% if (String(choix.annee) === String(a.annee)) { %> selected<% } %>><%= a.annee %> · <%= a.questions %> questions</option><% } %>
+        </select>
+      </div>
+      <div class="bw-champ">
+        <label class="bw-libelle" for="matiere">Matière <span class="bw-optionnel">(facultatif)</span></label>
+        <select class="bw-liste" id="matiere" name="matiere">
+          <option value="">Toutes les matières</option>
+          <% for (const m of matieres) { %><option value="<%= m.id %>"<% if (String(choix.matiere) === String(m.id)) { %> selected<% } %>><%= m.nom %> · <%= m.questions %></option><% } %>
+        </select>
+        <span class="bw-aide">Un peu plus de la moitié des questions ont une matière renseignée.</span>
+      </div>
+    </div>
+    <div><button class="bw-btn bw-btn--principal bw-btn--grand" type="submit"><%- icone('play') %>Lancer la série</button></div>
+  </form>
+</div>
+<%- include('partiels/bas') %>

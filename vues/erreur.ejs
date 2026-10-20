@@ -1,0 +1,8 @@
+<%- include('partiels/haut') %>
+<div class="pm-message-page">
+  <span class="pm-code"><%= code %></span>
+  <h1><%= titre %></h1>
+  <p><%= message %></p>
+  <a class="bw-btn bw-btn--principal" href="<%= utilisateur ? '/accueil' : '/' %>"><%- icone('house') %>Retour à l’accueil</a>
+</div>
+<%- include('partiels/bas') %>

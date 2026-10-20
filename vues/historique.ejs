@@ -1,0 +1,48 @@
+<%- include('partiels/haut') %>
+<div class="pm-etroit">
+  <div class="pm-tete"><h1>Historique</h1></div>
+  <nav class="bw-onglets__liste" aria-label="Type de séance">
+    <% for (const [v, libelle, ic] of [['series', 'Entraînements', 'dumbbell'], ['revisions', 'Révisions', 'book-open'], ['examens', 'Examens', 'graduation-cap']]) { %>
+    <a class="bw-onglets__onglet" href="/historique?vue=<%= v %>"<% if (vue === v) { %> aria-current="page"<% } %>><%- icone(ic, 'bw-icone--s') %><%= libelle %></a>
+    <% } %>
+  </nav>
+
+  <% if (vue === 'revisions') { %>
+    <% if (!passages.length) { %>
+      <div class="pm-vide"><p>Aucune révision pour l’instant.</p><a class="bw-btn bw-btn--sapin" href="/revision">Choisir une année</a></div>
+    <% } else { %>
+    <ul class="pm-liste">
+      <% for (const r of passages) { const t = notation.taux(Number(r.points), r.faites); %>
+      <li><a class="pm-ligne" href="/historique/revision/<%= r.id_revision %>">
+        <span><b>Annales <%= r.annee %></b><small><%= r.active ? 'En cours' : 'Terminée ou remise à zéro' %> · commencée le <%= format.date(r.date) %> · <%= r.faites %> / <%= r.total %> questions</small></span>
+        <span class="pm-ligne__droite"><span class="pm-taux pm-taux--<%= notation.niveau(t) %>"><%= t %> %</span><%- icone('chevron-right') %></span>
+      </a></li>
+      <% } %>
+    </ul>
+    <% } %>
+  <% } else { %>
+    <% if (!series.length) { %>
+      <div class="pm-vide">
+        <p><%= vue === 'examens' ? 'Aucun examen blanc pour l’instant.' : 'Aucune série pour l’instant.' %></p>
+        <a class="bw-btn bw-btn--principal" href="<%= vue === 'examens' ? '/examen' : '/entrainement' %>"><%= vue === 'examens' ? 'Préparer un examen' : 'Lancer une série' %></a>
+      </div>
+    <% } else { %>
+    <ul class="pm-liste">
+      <% for (const s of series) { const t = notation.taux(s.score, s.size); %>
+      <li><a class="pm-ligne" href="/historique/serie/<%= s.id_session %>">
+        <span><b><%= vue === 'examens' ? `Annales ${s.annee}` : [s.annee ?? 'Toutes les annales', s.matiere].filter(Boolean).join(' · ') %></b><small><%= format.date(s.date) %> · <%= s.size %> questions<% if (vue === 'examens' && s.duree_s) { %> · <%= format.duree(s.duree_s) %><% } %> · <%= format.nombre(s.score) %> / <%= s.size * 2 %> pts</small></span>
+        <span class="pm-ligne__droite"><span class="pm-taux pm-taux--<%= notation.niveau(t) %>"><%= t %> %</span><%- icone('chevron-right') %></span>
+      </a></li>
+      <% } %>
+    </ul>
+    <% if (pages > 1) { %>
+    <nav aria-label="Pages"><ul class="bw-pagination">
+      <% for (let i = 1; i <= pages; i++) { %>
+      <li><% if (i === page) { %><span aria-current="page"><%= i %></span><% } else { %><a href="/historique?vue=<%= vue %>&page=<%= i %>"><%= i %></a><% } %></li>
+      <% } %>
+    </ul></nav>
+    <% } %>
+    <% } %>
+  <% } %>
+</div>
+<%- include('partiels/bas') %>

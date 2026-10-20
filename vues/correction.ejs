@@ -1,0 +1,86 @@
+<%- include('partiels/haut') %>
+<%
+  const pourcent = notation.taux(score, nb);
+  const niv = notation.niveau(pourcent);
+  const etat = (q) => q.points >= 2 ? 'juste' : q.points > 0 ? 'partiel' : 'faux';
+  const justes = questions.filter((q) => etat(q) === 'juste').length;
+  const partielles = questions.filter((q) => etat(q) === 'partiel').length;
+%>
+<div class="pm-etroit">
+  <a class="bw-btn bw-btn--discret bw-btn--petit" href="<%= retour.href %>"><%- icone('arrow-left') %><%= retour.texte %></a>
+  <div class="pm-tete" style="margin-top:12px">
+    <p class="bw-surtitre"><%= surtitre %></p>
+    <h1><%= titre %></h1>
+    <% if (autreCompte) { %><p><%- icone('eye', 'bw-icone--s') %> Vue de l’administration : historique de <%= autreCompte %>.</p><% } %>
+  </div>
+
+  <section class="pm-bilan" aria-label="Bilan">
+    <div class="pm-anneau pm-anneau--<%= niv %>" style="--p: <%= pourcent ?? 0 %>" role="img" aria-label="<%= pourcent ?? 0 %> % de réussite">
+      <div><b><%= pourcent ?? 0 %> %</b><span><%= format.nombre(score) %> / <%= nb * 2 %> pts</span></div>
+    </div>
+    <div class="pm-bilan__texte">
+      <p><%= nb %> question<%= nb > 1 ? 's' : '' %><% if (date) { %> · <%= format.date(date) %><% } %><% if (duree) { %> · <%= format.duree(duree) %><% } %></p>
+      <div class="pm-repartition">
+        <span class="bw-etiquette bw-etiquette--juste"><%- icone('circle-check') %><%= justes %> juste<%= justes > 1 ? 's' : '' %></span>
+        <span class="bw-etiquette bw-etiquette--ocre"><%- icone('circle-minus') %><%= partielles %> en partie</span>
+        <span class="bw-etiquette bw-etiquette--brique"><%- icone('circle-x') %><%= nb - justes - partielles %> fausse<%= nb - justes - partielles > 1 ? 's' : '' %></span>
+      </div>
+      <% if (typeof progression !== 'undefined' && progression) { %>
+        <p class="bw-petit">Progression de l’année : <%= progression.faites %> / <%= progression.total %> questions<% if (progression.reussite != null) { %>, <%= progression.reussite %> % de réussite<% } %>.</p>
+      <% } %>
+      <div class="bw-rangee">
+        <% if (typeof relance !== 'undefined' && relance) { %>
+        <form method="post" action="/entrainement" class="pm-en-ligne">
+          <input type="hidden" name="annee" value="<%= relance.annee ?? '' %>"><input type="hidden" name="matiere" value="<%= relance.matiere ?? '' %>"><input type="hidden" name="nombre" value="<%= relance.nombre %>">
+          <button class="bw-btn bw-btn--principal" type="submit"><%- icone('shuffle') %>Nouvelle série</button>
+        </form>
+        <% } %>
+        <% if (typeof continuer !== 'undefined' && continuer) { %>
+        <form method="post" action="/revision" class="pm-en-ligne">
+          <input type="hidden" name="annee" value="<%= continuer %>"><input type="hidden" name="nombre" value="20">
+          <button class="bw-btn bw-btn--sapin" type="submit"><%- icone('play') %>Étape suivante</button>
+        </form>
+        <% } %>
+        <% if (typeof lienAnnee !== 'undefined' && lienAnnee) { %><a class="bw-btn bw-btn--secondaire" href="<%= lienAnnee %>">Toute l’année</a><% } %>
+      </div>
+    </div>
+  </section>
+
+  <div class="pm-corrections-cadre">
+    <div class="pm-rangee-fin" style="margin-bottom:12px">
+      <h2 class="bw-titre-3">Correction</h2>
+      <label class="pm-filtre-erreurs"><input type="checkbox" class="bw-interrupteur" role="switch" id="erreurs-seules"> Erreurs seulement</label>
+    </div>
+    <p class="pm-legende">
+      <span><%- icone('circle-check', 'bw-icone--s bw-icone--sapin') %>bonne réponse cochée</span>
+      <span><%- icone('circle-help', 'bw-icone--s') %>bonne réponse oubliée</span>
+      <span><%- icone('circle-x', 'bw-icone--s') %>cochée à tort</span>
+    </p>
+    <ol class="pm-corrections">
+      <% questions.forEach((q, i) => {
+        const bonnes = notation.lettres(q.correct);
+        const donnees = notation.lettres(q.reponse);
+      %>
+      <li class="pm-correction pm-correction--<%= etat(q) %>">
+        <div class="pm-correction__tete">
+          <span><b><%= i + 1 %>.</b> <%= q.type %> · <%= q.year %> n° <%= q.number %><% if (q.matieres) { %> · <%= q.matieres %><% } %></span>
+          <span><span class="pm-points"><%= format.nombre(q.points) %> / 2</span><% if (!donnees.length) { %> · sans réponse<% } else if (q.erreurs) { %> · <%= q.erreurs %> erreur<%= q.erreurs > 1 ? 's' : '' %><% } %></span>
+        </div>
+        <p class="pm-correction__enonce"><%= q.question %></p>
+        <ol>
+          <% for (const l of notation.LETTRES) {
+            const bonne = bonnes.includes(l); const cochee = donnees.includes(l);
+            const cls = bonne && cochee ? 'est-juste' : bonne ? 'est-oubliee' : cochee ? 'est-fausse' : '';
+          %>
+          <li class="<%= cls %>">
+            <b><%= l %></b><span><%= q[l] %></span>
+            <% if (cls === 'est-juste') { %><em><%- icone('circle-check') %>juste</em><% } else if (cls === 'est-oubliee') { %><em><%- icone('circle-help') %>oubliée</em><% } else if (cls === 'est-fausse') { %><em><%- icone('circle-x') %>à tort</em><% } %>
+          </li>
+          <% } %>
+        </ol>
+      </li>
+      <% }) %>
+    </ol>
+  </div>
+</div>
+<%- include('partiels/bas') %>
