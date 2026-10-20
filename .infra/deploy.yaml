@@ -21,4 +21,5 @@ network:
 addons:
   database: mariadb
   events: true
-  # mail: true                    # relais smtp-relay (DEC-004) : à activer quand il existera
+  # mail: true                    # relais smtp-relay (DEC-019) : SMTP_HOST et SMTP_PORT injectés.
+                                  # À activer au signal de l'Infra (fournisseur branché), sinon 451.

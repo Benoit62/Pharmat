@@ -15,8 +15,9 @@ const transport = c
       port: c.port,
       secure: c.port === 465,
       auth: c.user ? { user: c.user, pass: c.motDePasse } : undefined,
-      // Le relais interne parle en clair ; un fournisseur externe négocie STARTTLS de lui-même
-      ignoreTLS: !c.user && c.port === 25,
+      // Sans identifiants, c'est le relais interne de la plateforme (smtp-relay:2525, DEC-019) :
+      // en clair. Avec identifiants, un fournisseur externe négocie STARTTLS de lui-même.
+      ignoreTLS: !c.user,
     })
   : null;
 
