@@ -39,6 +39,8 @@ app.use(
     maxAge: config.production ? '7d' : 0,
     setHeaders(res, chemin) {
       if (/\.(woff2|svg|png|ico)$/.test(chemin)) res.setHeader('Cache-Control', 'public, max-age=2592000');
+      // Le logo des courriels est affiché par les messageries, depuis une autre origine
+      if (chemin.endsWith('logo-courriel.png')) res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
     },
   }),
 );
